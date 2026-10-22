@@ -1,0 +1,14 @@
+# Local development: just Postgres on localhost:5432. Run the CMS itself with `npm run dev`.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ull
+      POSTGRES_PASSWORD: ull
+      POSTGRES_DB: ull_cms
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+volumes:
+  pgdata-dev:

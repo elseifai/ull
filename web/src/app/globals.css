@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@import "@fontsource-variable/source-serif-4/opsz.css";
+@import "@fontsource-variable/source-serif-4/opsz-italic.css";
+@import "@fontsource-variable/inter";
+
+/* ULL brand tokens, sampled from the United Learning League logo. */
+@theme {
+  --color-navy: #0d3161;
+  --color-navy-900: #08203f;
+  --color-navy-50: #f1f4f8;
+  --color-orange: #eb5026;
+  --color-orange-700: #c2410c; /* orange for small text (AA) */
+  --color-orange-50: #fdf1ec;
+  --color-teal: #24b5c5;
+  --color-teal-700: #0e7c88; /* teal for small text (AA) */
+  --color-teal-50: #eaf8f9;
+  --color-gold: #fcac14;
+  --color-gold-50: #fff7e6;
+  --color-cream: #fbf8f3;
+  --color-ink: #1d2b3e;
+  --color-muted: #55657a;
+  --color-line: #e7e2d8;
+
+  /* Editorial serif for headings (university feel), clean sans for reading and UI. */
+  --font-serif: "Source Serif 4 Variable", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-[17px] leading-[1.7] text-ink antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3 {
+    @apply font-serif font-semibold text-navy;
+    text-wrap: balance;
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
+  }
+  h4 { @apply font-sans font-semibold text-navy; }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-teal-700;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+}
+
+/* Layout */
+@utility container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10; }
+@utility section-y { @apply py-16 sm:py-20 lg:py-28; }
+
+/* Type scale */
+@utility display { @apply font-serif text-[2.5rem] leading-[1.05] font-semibold tracking-[-0.02em] sm:text-6xl lg:text-7xl; }
+@utility h1 { @apply font-serif text-4xl leading-[1.1] font-semibold tracking-[-0.02em] sm:text-5xl lg:text-6xl; }
+@utility h2 { @apply font-serif text-3xl leading-[1.15] font-semibold sm:text-4xl lg:text-[2.75rem]; }
+@utility h3 { @apply font-serif text-xl leading-snug font-semibold sm:text-2xl; }
+@utility lead { @apply text-lg leading-relaxed text-muted sm:text-xl; }
+@utility eyebrow { @apply flex items-center gap-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-orange-700; }
+@utility rule-gold { @apply h-[3px] w-12 bg-gold; }
+
+/* Buttons */
+@utility btn { @apply inline-flex min-h-12 items-center justify-center gap-2 px-6 py-3 text-[15px] font-semibold tracking-wide transition-colors; }
+@utility btn-primary { @apply btn bg-navy text-white hover:bg-navy-900; }
+@utility btn-accent { @apply btn bg-orange text-white hover:bg-orange-700; }
+@utility btn-outline { @apply btn border border-navy/25 bg-transparent text-navy hover:border-navy hover:bg-navy hover:text-white; }
+@utility btn-ghost-light { @apply btn border border-white/40 text-white hover:bg-white hover:text-navy; }
+@utility link-arrow { @apply inline-flex items-center gap-2 text-[15px] font-semibold text-navy underline decoration-gold decoration-2 underline-offset-[6px] hover:decoration-orange; }
+
+/* Text half of a full-bleed split: lines up with the page container on the left. */
+@utility split-text { @apply w-full px-5 sm:px-8 lg:pr-16 lg:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]; }
