@@ -65,10 +65,11 @@ if [[ "${SITE_ONLY:-}" == "true" ]]; then
 fi
 
 : "${InstanceId:?}" "${PayloadSecretArn:?}" "${PostgresSecretArn:?}" "${HookSecretArn:?}" "${BackupBucketName:?}"
+: "${PrivateBucketName:?missing: run 'cd infra && npx cdk deploy $STACK' first (adds the private documents bucket)}"
 
-python3 - "$ROOT" "$InstanceId" "$IMAGE" "$SiteUrl" "${AltOrigin:-}" "$MediaBucketName" "$CdnHost" "$BackupBucketName" "$STAGE" "$PayloadSecretArn" "$PostgresSecretArn" "$HookSecretArn" << 'PY'
+python3 - "$ROOT" "$InstanceId" "$IMAGE" "$SiteUrl" "${AltOrigin:-}" "$MediaBucketName" "$CdnHost" "$BackupBucketName" "$PrivateBucketName" "$STAGE" "$PayloadSecretArn" "$PostgresSecretArn" "$HookSecretArn" << 'PY'
 import json, subprocess, sys, time, pathlib, base64
-root, instance, image, site, alt, bucket, cdn, backup, stage, payload_arn, postgres_arn, hook_arn = sys.argv[1:]
+root, instance, image, site, alt, bucket, cdn, backup, private, stage, payload_arn, postgres_arn, hook_arn = sys.argv[1:]
 compose = pathlib.Path(root, "deploy/docker-compose.aws.yml").read_bytes()
 remote = pathlib.Path(root, "deploy/remote-up.sh").read_bytes()
 script = f"""
@@ -83,6 +84,7 @@ export ALT_ORIGIN={alt}
 export S3_BUCKET={bucket}
 export CDN_HOST={cdn}
 export BACKUP_BUCKET={backup}
+export PRIVATE_BUCKET={private}
 export STAGE={stage}
 export PAYLOAD_SECRET_ARN={payload_arn}
 export POSTGRES_SECRET_ARN={postgres_arn}

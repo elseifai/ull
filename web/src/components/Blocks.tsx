@@ -66,7 +66,7 @@ function Feature({ card, index, light }: { card: Card; index: number; light?: bo
     <>
       {card.image && (
         <div className="relative mb-6 aspect-[3/2] overflow-hidden">
-          <Img src={card.image} accent={card.accent} className="transition-transform duration-500 group-hover:scale-[1.03]" />
+          <Img src={card.image} accent={card.accent} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="transition-transform duration-500 group-hover:scale-[1.03]" />
         </div>
       )}
       <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
           <Section tone={block.tone}>
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
               <div className={`relative aspect-[4/3] overflow-hidden lg:aspect-[5/6] ${imageLeft ? "" : "lg:order-2"}`}>
-                <Img src={block.image} accent="gold" />
+                <Img src={block.image} accent="gold" sizes="(min-width: 1024px) 50vw, 100vw" />
               </div>
               <div>
                 {block.eyebrow && <Eyebrow light={light}>{block.eyebrow}</Eyebrow>}
@@ -156,7 +156,7 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
             {block.items.map((c) => (
               <Link key={c.title} href={c.href ?? "#"} className="group block">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <Img src={c.image} accent={c.accent} className="transition-transform duration-500 group-hover:scale-[1.04]" />
+                  <Img src={c.image} accent={c.accent} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="transition-transform duration-500 group-hover:scale-[1.04]" />
                   {c.tag && (
                     <span className="absolute left-0 top-0 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-navy">{c.tag}</span>
                   )}
@@ -240,7 +240,7 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
         <section className="relative overflow-hidden bg-navy text-white">
           <div className="grid lg:grid-cols-2">
             <div className="relative aspect-[16/10] lg:order-2 lg:aspect-auto lg:min-h-[28rem]">
-              <Img src={block.image ?? img.arrival} accent="navy" />
+              <Img src={block.image ?? img.arrival} accent="navy" sizes="(min-width: 1024px) 50vw, 100vw" />
             </div>
             <div className="split-text flex items-center py-14 lg:py-20">
               <div>
@@ -264,7 +264,7 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
             {block.items.map((g, i) => (
               <figure key={g.image} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}>
                 <div className={`relative overflow-hidden ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:h-[calc(100%-4.5rem)]" : "aspect-[4/3]"}`}>
-                  <Img src={g.image} accent={(["gold", "teal", "orange", "navy"] as Accent[])[i % 4]} />
+                  <Img src={g.image} accent={(["gold", "teal", "orange", "navy"] as Accent[])[i % 4]} sizes={i === 0 ? "(min-width: 640px) 66vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"} />
                 </div>
                 <figcaption className="mt-4">
                   <span className="font-serif text-lg font-semibold text-navy">{g.title}</span>

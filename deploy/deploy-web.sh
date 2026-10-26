@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Build the public site and publish it to S3 + CloudFront.
 # Needs: AWS CLI configured, S3_BUCKET and CLOUDFRONT_ID set. CMS_URL to pull published CMS content.
-# CDN_BUCKET and NEXT_PUBLIC_CDN_URL publish versioned brand images to the stage CDN first.
+# CDN_BUCKET and NEXT_PUBLIC_CDN_URL publish versioned brand images to the stage CDN first, and the
+# build fails if any page then points at media outside that CDN (deploy/check-cdn-urls.mjs).
 set -euo pipefail
 : "${S3_BUCKET:?set S3_BUCKET}" "${CLOUDFRONT_ID:?set CLOUDFRONT_ID}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -15,6 +16,7 @@ cd "$ROOT/web"
 
 npm ci
 npm run build
+node "$ROOT/deploy/check-cdn-urls.mjs" out
 
 # Hashed site assets live under /_site so /_next can be the CMS on the same hostname.
 # Long cache for hashed assets, short cache for HTML and data so edits show quickly.

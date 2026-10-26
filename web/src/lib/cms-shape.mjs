@@ -21,6 +21,38 @@ export function clean(v, base = "") {
 
 export const mediaUrl = (url, base = "") => (/^https?:/.test(url) ? url : `${base}${url}`);
 
+// Photos narrower than a size keep their own width for it, so skip repeated widths.
+const srcset = (sizes, names, base) =>
+  names
+    .map((n) => sizes?.[n])
+    .filter((s, i, all) => s?.url && s.width && all.findIndex((o) => o?.width === s.width) === i)
+    .map((s) => `${mediaUrl(s.url, base)} ${s.width}w`)
+    .join(", ") || undefined;
+
+/**
+ * Responsive variants for every media document in v, keyed by the URL that clean() leaves in
+ * `image`. The site renders these as <picture> (AVIF, then WebP, then the original).
+ */
+export function collectMedia(v, base = "", into = {}) {
+  if (Array.isArray(v)) v.forEach((x) => collectMedia(x, base, into));
+  else if (v && typeof v === "object") {
+    for (const [k, x] of Object.entries(v)) {
+      if (k === "image" && x && typeof x === "object" && x.url) {
+        const s = x.sizes ?? {};
+        into[mediaUrl(x.url, base)] = {
+          width: x.width ?? undefined,
+          height: x.height ?? undefined,
+          alt: x.alt || undefined,
+          avif: srcset(s, ["thumbAvif", "cardAvif", "heroAvif"], base),
+          webp: srcset(s, ["thumb", "card", "hero"], base),
+          og: s.og?.url ? mediaUrl(s.og.url, base) : undefined,
+        };
+      } else collectMedia(x, base, into);
+    }
+  }
+  return into;
+}
+
 const texts = (xs) => (xs?.length ? xs.map((x) => x.text).filter(Boolean) : undefined);
 const link = (l) => (l?.label && l?.href ? l : undefined);
 
