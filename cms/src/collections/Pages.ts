@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { canEditContent, hideUnless } from '../access/roles'
 import { blocks } from '../blocks'
+import { env } from '../lib/env'
 import { rebuildOnPublish } from '../lib/rebuild'
 
 export const Pages: CollectionConfig = {
@@ -10,7 +11,7 @@ export const Pages: CollectionConfig = {
     group: 'Website',
     hidden: hideUnless('schoolAdmin', 'editor'),
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
-    preview: (doc) => `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/${doc.slug ? `${doc.slug}/` : ''}`,
+    preview: (doc) => `${env('NEXT_PUBLIC_SITE_URL') ?? ''}/${doc.slug ? `${doc.slug}/` : ''}`,
   },
   versions: { drafts: true, maxPerDoc: 20 },
   access: {

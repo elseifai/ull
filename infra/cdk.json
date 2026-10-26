@@ -1,0 +1,7 @@
+{
+  "app": "npx tsx bin/ull.ts",
+  "profile": "ull-aws-cursor-vaibhav",
+  "context": {
+    "attachDomains": true
+  }
+}

@@ -1,24 +1,35 @@
 // Brand imagery from the ULL Auremont concept (design visualisations, owned by ULL).
 // Drop the files into web/public/assets/ with these names; missing files fall back to brand artwork.
+// A deploy with CDN_BUCKET set rewrites cdn-assets.json so each file is served from the stage CDN
+// at assets/{content-hash}/{filename}.
+import versions from "./cdn-assets.json";
+
+const cdn = process.env.NEXT_PUBLIC_CDN_URL?.replace(/\/$/, "");
+const versioned = versions as Record<string, string>;
+
+export function assetPath(file: string) {
+  if (cdn && versioned[file]) return `${cdn}/assets/${versioned[file]}`;
+  return `/assets/${file}`;
+}
 
 export const img = {
-  logo: "/assets/ull-auremont-logo.jpeg",
-  jonty: "/assets/jonty-ambassador.jpeg",
-  arrival: "/assets/arrival-concept.png",
-  courtyard: "/assets/courtyard-concept.png",
-  toddler: "/assets/toddler-space.png",
-  nursery: "/assets/nursery-space.png",
-  primary: "/assets/primary-space.png",
-  senior: "/assets/senior-space.png",
-  vocal: "/assets/vocal-space.png",
-  music: "/assets/music-space.png",
-  dance: "/assets/dance-space.png",
-  indoorGames: "/assets/indoor-games-space.png",
-  dining: "/assets/kitchen-dining-space.png",
-  passage: "/assets/passage-space.png",
-  parent: "/assets/parent-conversation-concept.png",
-  counselling: "/assets/counselling-concept.png",
-  admissionsForm: "/assets/admissions-form-concept.png",
+  logo: assetPath("ull-auremont-logo.jpeg"),
+  jonty: assetPath("jonty-ambassador.jpeg"),
+  arrival: assetPath("arrival-concept.png"),
+  courtyard: assetPath("courtyard-concept.png"),
+  toddler: assetPath("toddler-space.png"),
+  nursery: assetPath("nursery-space.png"),
+  primary: assetPath("primary-space.png"),
+  senior: assetPath("senior-space.png"),
+  vocal: assetPath("vocal-space.png"),
+  music: assetPath("music-space.png"),
+  dance: assetPath("dance-space.png"),
+  indoorGames: assetPath("indoor-games-space.png"),
+  dining: assetPath("kitchen-dining-space.png"),
+  passage: assetPath("passage-space.png"),
+  parent: assetPath("parent-conversation-concept.png"),
+  counselling: assetPath("counselling-concept.png"),
+  admissionsForm: assetPath("admissions-form-concept.png"),
 };
 
 export const alts: Record<string, string> = {

@@ -2,10 +2,16 @@
 import { useDocumentInfo } from '@payloadcms/ui'
 
 // Sidebar link from a page's form to the visual page builder on the website.
-const site = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4100').replace(/\/$/, '')
+// On AWS the admin and the site share a host, so the link stays on that host.
+// Locally the admin is on :3000 and the site is on :4100.
+function siteBase() {
+  if (typeof window !== 'undefined' && window.location.port !== '3000') return window.location.origin
+  return (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4100').replace(/\/$/, '')
+}
 
 export function OpenBuilder() {
   const { id } = useDocumentInfo()
+  const site = siteBase()
   const href = id ? `${site}/editor/?id=${id}` : `${site}/editor/`
   return (
     <div style={{ marginBottom: 'var(--base)' }}>

@@ -11,16 +11,24 @@ import { Pages } from './collections/Pages'
 import { Enquiries } from './collections/Enquiries'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
+import { env } from './lib/env'
+import { storagePlugins } from './lib/storage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 // Origins allowed to call the API from a browser (the public site and local dev).
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4100').replace(/\/$/, '')
-const origins = [process.env.NEXT_PUBLIC_SITE_URL, 'http://localhost:3000', 'http://localhost:4100'].filter(Boolean) as string[]
+const siteUrl = (env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:4100').replace(/\/$/, '')
+const origins = [
+  ...new Set(
+    [siteUrl, env('PAYLOAD_PUBLIC_SERVER_URL'), ...(env('CORS_ORIGINS') || '').split(','), 'http://localhost:3000', 'http://localhost:4100']
+      .map((origin) => origin?.trim())
+      .filter((origin): origin is string => Boolean(origin)),
+  ),
+]
 
 export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
+  serverURL: env('PAYLOAD_PUBLIC_SERVER_URL') || siteUrl,
   admin: {
     user: Users.slug,
     meta: { titleSuffix: ' · ULL Admissions Desk' },
@@ -41,10 +49,10 @@ export default buildConfig({
   cors: origins,
   csrf: origins,
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: env('PAYLOAD_SECRET') || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   // Migrations run automatically when the production server starts.
-  db: postgresAdapter({ pool: { connectionString: process.env.DATABASE_URL || '' }, prodMigrations: migrations }),
+  db: postgresAdapter({ pool: { connectionString: env('DATABASE_URL') || '' }, prodMigrations: migrations }),
   sharp,
-  plugins: [],
+  plugins: storagePlugins(),
 })

@@ -1,4 +1,5 @@
 import type { Payload } from 'payload'
+import { env } from './env'
 
 // One adapter for every channel. Providers are switched on by environment variables;
 // without keys, messages are logged so the flow can be tested end to end.
@@ -20,7 +21,8 @@ const toE164India = (phone: string) => {
 }
 
 async function sendWhatsApp(m: Message, payload: Payload) {
-  const { WATI_API_URL, WATI_TOKEN } = process.env
+  const WATI_API_URL = env('WATI_API_URL')
+  const WATI_TOKEN = env('WATI_TOKEN')
   if (!m.to.phone) return
   if (!WATI_API_URL || !WATI_TOKEN) return payload.logger.info(`[whatsapp:dry-run] ${m.template} → ${m.to.phone}`)
   const res = await fetch(`${WATI_API_URL}/api/v1/sendTemplateMessage?whatsappNumber=${toE164India(m.to.phone)}`, {
@@ -36,7 +38,8 @@ async function sendWhatsApp(m: Message, payload: Payload) {
 }
 
 async function sendSms(m: Message, payload: Payload) {
-  const { GUPSHUP_API_KEY, GUPSHUP_SENDER } = process.env
+  const GUPSHUP_API_KEY = env('GUPSHUP_API_KEY')
+  const GUPSHUP_SENDER = env('GUPSHUP_SENDER')
   if (!m.to.phone) return
   if (!GUPSHUP_API_KEY || !GUPSHUP_SENDER) return payload.logger.info(`[sms:dry-run] ${m.template} → ${m.to.phone}`)
   const body = new URLSearchParams({ channel: 'sms', source: GUPSHUP_SENDER, destination: toE164India(m.to.phone), message: m.text })
@@ -50,7 +53,7 @@ async function sendSms(m: Message, payload: Payload) {
 
 async function sendEmail(m: Message, payload: Payload) {
   if (!m.to.email) return
-  if (!process.env.SES_FROM) return payload.logger.info(`[email:dry-run] ${m.template} → ${m.to.email}`)
+  if (!env('SES_FROM')) return payload.logger.info(`[email:dry-run] ${m.template} → ${m.to.email}`)
   await payload.sendEmail({ to: m.to.email, subject: m.subject ?? 'ULL Auremont', text: m.text })
 }
 

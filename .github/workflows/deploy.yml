@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches: [uat, prod]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: Stage
+        required: true
+        type: choice
+        options: [uat, prod]
+      site_only:
+        description: Rebuild the static site only
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.event.inputs.stage || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-arn: arn:aws:iam::862330373376:role/ull-${{ github.event.inputs.stage || github.ref_name }}-github
+          aws-region: ap-south-1
+      - name: Publish this stage
+        env:
+          SITE_ONLY: ${{ github.event.inputs.site_only == true && 'true' || '' }}
+        run: bash deploy/rollout-stage.sh "${{ github.event.inputs.stage || github.ref_name }}"
