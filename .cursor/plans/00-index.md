@@ -1,0 +1,26 @@
+# Plans index
+
+One plan per point from the 23 Oct 2026 brief. Start with 01 (timeline).
+
+- [01 Timeline for all workstreams](01-timeline.plan.md)
+- [02 AWS deployment (infra, CDK, domain, DNS, SSL, CDN, backups)](02-aws-deployment.plan.md)
+- [03 GST, company profile and payment details](03-gst-company-payments.plan.md)
+- [04 Marketing, online and offline](04-marketing.plan.md)
+- [05 Brand architecture (ULL India, ULL Global, ULL Auremont)](05-brand-architecture.plan.md)
+- [06 Visitor management dashboard and operational intelligence](06-visitor-management-ops-intelligence.plan.md)
+- [07 Website with CMS, AI content intake and SEO validation](07-website-cms-ai-seo.plan.md)
+- [08 In-house CRM for group admins, school admins and counsellors](08-in-house-crm.plan.md)
+- [09 SSO for admins (Microsoft Entra ID) and for parents and students](09-sso-staff-and-families.plan.md)
+- [10 Student dashboard](10-student-dashboard.plan.md)
+- [11 Parent dashboard](11-parent-dashboard.plan.md)
+- [12 Google Business Profile connector in the admin portal](12-google-business-profile-connector.plan.md)
+- [13 CDN for all media uploads and references](13-cdn-uploads.plan.md)
+- [14 Social media and metrics dashboard for the group admin](14-social-media-metrics.plan.md)
+- [15 Competitor deep study and gap report](15-competitor-study-gap-report.plan.md)
+- [16 Dedicated pages for ULL Global and ULL Auremont](16-global-and-auremont-pages.plan.md)
+- [17 Success metrics for each team](17-success-metrics.plan.md)
+- [18 CRM lead source attribution (online, offline, coupons, WhatsApp)](18-crm-lead-source-attribution.plan.md)
+- [19 External CRM sync (Orggen CRM / Zoho CRM)](19-external-crm-sync.plan.md)
+- [20 ULL India on aptitudetest.in (ullindia.aptitudetest.in)](20-aptitudetest-integration.plan.md)
+- [21 Audio recorder devices and AI success metrics per persona](21-audio-recorder-ai-metrics.plan.md)
+- [22 Sarvam AI voice agents (outbound and common inbound with human handover)](22-sarvam-voice-agents.plan.md)
