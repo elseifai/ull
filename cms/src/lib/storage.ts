@@ -29,48 +29,61 @@ function s3() {
 
 // Local development keeps files on disk. When S3_BUCKET is set, uploads go to that stage's bucket
 // and are served from its CDN. Replacing a file uses a new prefix, and the old object is left in
-// place so a page that still points at the previous URL keeps working.
+// place so a page that still points at the previous URL keeps working. Each file's own prefix
+// (media/<hash> or docs/<hash>, from the Media hook) is the whole folder in the bucket.
 export function storagePlugins(): Plugin[] {
+  return [mediaStorage(), privateStorage()]
+}
+
+// Private files go to the stage's private bucket. Payload checks read access first, then redirects
+// to a presigned link that expires after 5 minutes. Without PRIVATE_BUCKET they stay on local disk.
+function privateStorage(): Plugin {
+  const bucket = env('PRIVATE_BUCKET')
+  return s3Storage({
+    enabled: Boolean(bucket),
+    alwaysInsertFields: true,
+    bucket: bucket || 'local',
+    collections: { 'private-files': { prefix: 'private', signedDownloads: { expiresIn: 300 } } },
+    config: { region: env('AWS_REGION') || 'ap-south-1' },
+  })
+}
+
+function mediaStorage(): Plugin {
   const bucket = env('S3_BUCKET')
   if (!bucket || !cdnHost()) {
-    return [
-      s3Storage({
-        enabled: false,
-        alwaysInsertFields: true,
-        bucket: bucket || 'local',
-        collections: { media: true },
-        config: { region: env('AWS_REGION') || 'ap-south-1' },
-      }),
-    ]
+    return s3Storage({
+      enabled: false,
+      alwaysInsertFields: true,
+      bucket: bucket || 'local',
+      collections: { media: true },
+      config: { region: env('AWS_REGION') || 'ap-south-1' },
+    })
   }
 
-  return [
-    cloudStoragePlugin({
-      alwaysInsertFields: true,
-      collections: {
-        media: {
-          prefix: 'media',
-          disablePayloadAccessControl: true,
-          generateFileURL: ({ filename, prefix }) => publicMediaUrl(prefix, filename),
-          adapter: () => ({
-            name: 's3',
-            generateURL: ({ filename, prefix }) => publicMediaUrl(prefix, filename),
-            handleDelete: async () => {},
-            handleUpload: async ({ file, storageFilePath }) => {
-              await s3().send(
-                new PutObjectCommand({
-                  Bucket: bucket,
-                  Key: storageFilePath,
-                  Body: fileBody(file),
-                  ContentType: file.mimeType,
-                  CacheControl: 'public, max-age=31536000, immutable',
-                }),
-              )
-            },
-            staticHandler: (_req, { params }) => Response.redirect(publicMediaUrl(params.prefix, params.filename), 302),
-          }),
-        },
+  return cloudStoragePlugin({
+    alwaysInsertFields: true,
+    collections: {
+      media: {
+        disablePayloadAccessControl: true,
+        generateFileURL: ({ filename, prefix }) => publicMediaUrl(prefix, filename),
+        adapter: () => ({
+          name: 's3',
+          generateURL: ({ filename, prefix }) => publicMediaUrl(prefix, filename),
+          handleDelete: async () => {},
+          handleUpload: async ({ file, storageFilePath }) => {
+            await s3().send(
+              new PutObjectCommand({
+                Bucket: bucket,
+                Key: storageFilePath,
+                Body: fileBody(file),
+                ContentType: file.mimeType,
+                CacheControl: 'public, max-age=31536000, immutable',
+              }),
+            )
+          },
+          staticHandler: (_req, { params }) => Response.redirect(publicMediaUrl(params.prefix, params.filename), 302),
+        }),
       },
-    }),
-  ]
+    },
+  })
 }

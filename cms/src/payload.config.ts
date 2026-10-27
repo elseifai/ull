@@ -7,6 +7,7 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { MAX_PRIVATE_UPLOAD, PrivateFiles } from './collections/PrivateFiles'
 import { Pages } from './collections/Pages'
 import { Enquiries } from './collections/Enquiries'
 import { SiteSettings } from './globals/SiteSettings'
@@ -44,7 +45,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Enquiries, Pages, Media, Users],
+  collections: [Enquiries, Pages, Media, PrivateFiles, Users],
   globals: [SiteSettings],
   cors: origins,
   csrf: origins,
@@ -54,5 +55,8 @@ export default buildConfig({
   // Migrations run automatically when the production server starts.
   db: postgresAdapter({ pool: { connectionString: env('DATABASE_URL') || '' }, prodMigrations: migrations }),
   sharp,
+  // Larger uploads are refused before they are read into memory. Media allows 10 MB (see Media.ts);
+  // private files allow more for counselling recordings.
+  upload: { limits: { fileSize: MAX_PRIVATE_UPLOAD } },
   plugins: storagePlugins(),
 })

@@ -36,7 +36,7 @@ export function PageHero({ page }: { page: Page }) {
           </div>
         </div>
         <div className="relative aspect-[16/11] lg:aspect-auto">
-          <Img src={hero.image} accent={hero.accent} priority />
+          <Img src={hero.image} accent={hero.accent} sizes="(min-width: 1024px) 50vw, 100vw" priority />
         </div>
       </div>
     </section>

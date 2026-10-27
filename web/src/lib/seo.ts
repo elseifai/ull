@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import { hasImage } from "@/components/Img";
+import { img } from "@/content/assets";
+import { mediaVariant } from "@/content/media";
 import { site } from "@/content/site";
 import type { Page } from "@/content/types";
+
+// Brand files come from the CDN once a stage publishes them; locally they are site-relative.
+const absolute = (src: string) => (/^https?:/.test(src) ? src : `${site.url}${src}`);
 
 export function pageUrl(slug: string) {
   return `${site.url}/${slug ? `${slug}/` : ""}`;
@@ -9,11 +15,19 @@ export function pageUrl(slug: string) {
 export function pageMetadata(page: Page): Metadata {
   const url = pageUrl(page.slug);
   const noindex = page.slug === "portal";
+  // The hero photo's 1200×630 crop from the CDN; pages without one keep the site-wide /og.png.
+  const og = mediaVariant(page.hero.image)?.og;
   return {
     title: page.title,
     description: page.description,
     alternates: { canonical: url },
-    openGraph: { title: page.title, description: page.description, url, type: "website" },
+    openGraph: {
+      title: page.title,
+      description: page.description,
+      url,
+      type: "website",
+      ...(og && { images: [{ url: og, width: 1200, height: 630 }] }),
+    },
     robots: noindex ? { index: false, follow: true } : undefined,
   };
 }
@@ -29,7 +43,7 @@ export function schoolJsonLd() {
     slogan: site.motto,
     description: `${site.board} school in ${a.locality}, ${a.city} for ${site.grades}. ${site.tagline}`,
     url: site.url,
-    logo: `${site.url}/icon.svg`,
+    logo: hasImage(img.logo) ? absolute(img.logo) : `${site.url}/icon.svg`,
     ...(site.phone && { telephone: site.phone }),
     ...(site.email && { email: site.email }),
     address: {

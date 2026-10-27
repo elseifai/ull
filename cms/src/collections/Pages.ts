@@ -1,8 +1,19 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Validate } from 'payload'
 import { canEditContent, hideUnless } from '../access/roles'
 import { blocks } from '../blocks'
 import { env } from '../lib/env'
 import { rebuildOnPublish } from '../lib/rebuild'
+
+// Hero photos fill the screen width, so small images look blurred.
+const HERO_MIN_WIDTH = 800
+const heroImageWideEnough: Validate = async (value, { req }) => {
+  const id = value && typeof value === 'object' ? (value as { id?: number | string }).id : value
+  if (!id) return true
+  const media = await req.payload.findByID({ collection: 'media', id: id as number, depth: 0, req }).catch(() => null)
+  if (media?.width && media.width < HERO_MIN_WIDTH)
+    return `Hero photos must be at least ${HERO_MIN_WIDTH} px wide (this one is ${media.width} px).`
+  return true
+}
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -43,7 +54,7 @@ export const Pages: CollectionConfig = {
         ] },
         { name: 'heading', type: 'text', required: true },
         { name: 'lead', type: 'textarea' },
-        { name: 'image', type: 'upload', relationTo: 'media' },
+        { name: 'image', type: 'upload', relationTo: 'media', validate: heroImageWideEnough },
         { name: 'actions', type: 'array', maxRows: 2, fields: [{ type: 'row', fields: [{ name: 'label', type: 'text', required: true }, { name: 'href', type: 'text', required: true }] }] },
       ],
     },

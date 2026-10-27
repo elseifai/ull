@@ -45,6 +45,17 @@ export class StageStack extends cdk.Stack {
       objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
       versioned: true,
     })
+    // Applicant documents, recordings and reports. Never behind CloudFront: the CMS checks access,
+    // then hands out a 5-minute presigned link.
+    const privateBucket = new s3.Bucket(this, 'Private', {
+      bucketName: `ull-${stageName}-private-${account}`,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
+      versioned: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    })
     const backupBucket = new s3.Bucket(this, 'Backup', {
       bucketName: `ull-${stageName}-backup-${account}`,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -83,6 +94,7 @@ export class StageStack extends cdk.Stack {
     })
     repository.grantPull(role)
     mediaBucket.grantReadWrite(role)
+    privateBucket.grantReadWrite(role)
     backupBucket.grantPut(role)
     backupBucket.grantRead(role)
     payloadSecret.grantRead(role)
@@ -265,6 +277,7 @@ export class StageStack extends cdk.Stack {
     const mediaHost = certificate ? cdnHost : cdnDistribution.distributionDomainName
     new cdk.CfnOutput(this, 'SiteBucketName', { value: siteBucket.bucketName })
     new cdk.CfnOutput(this, 'MediaBucketName', { value: mediaBucket.bucketName })
+    new cdk.CfnOutput(this, 'PrivateBucketName', { value: privateBucket.bucketName })
     new cdk.CfnOutput(this, 'BackupBucketName', { value: backupBucket.bucketName })
     new cdk.CfnOutput(this, 'SiteDistributionId', { value: siteDistribution.distributionId })
     new cdk.CfnOutput(this, 'CdnDistributionId', { value: cdnDistribution.distributionId })

@@ -4,25 +4,25 @@ overview: Every upload and every media reference is stored in that stage's S3 bu
 todos:
   - id: commit
     content: Commit storage.ts, media-prefix.ts, the two media migrations, publish-assets.mjs and cdn-assets.json, with the media-prefix test
-    status: pending
+    status: completed
   - id: backfill
     content: Backfill existing local uploads to S3 under hashed prefixes and rewrite stored URLs
-    status: pending
+    status: in_progress
   - id: references
     content: Make every media reference (blocks, rich text, SEO OG image, News, Faculty) resolve through publicMediaUrl
-    status: pending
+    status: completed
   - id: image-pipeline
     content: Generate AVIF/WebP sizes on upload, enforce size limits, and strip EXIF location data
-    status: pending
+    status: completed
   - id: video
     content: Decide video hosting (YouTube embed by default; S3 + CloudFront for short loops)
-    status: pending
+    status: completed
   - id: private
     content: Route private uploads (applicant documents, recordings, reports, portfolios) to the private bucket with presigned URLs
-    status: pending
+    status: completed
   - id: checks
     content: Add a build check that fails if any page references a non-CDN media URL
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -40,6 +40,16 @@ isProject: false
 | Local dev falls back to disk when `S3_BUCKET`/`CDN_HOST` are unset | `storage.ts` | written |
 
 Design (from `.cursor/plans/aws_three_environments_fc853ca1.plan.md`): replacing a photo writes a new hash and a new URL; old objects stay so pages still pointing at them keep working; S3 versioning is on.
+
+## Built on 26 Oct 2026 (branch `claude/gifted-dirac-s866fd`, not yet released to UAT)
+
+- **Image pipeline** (`cms/src/collections/Media.ts`): `thumb` 400, `card` 800, `hero` 1600 as WebP and AVIF, plus `og` 1200×630 JPEG. The original keeps its format, is auto-rotated, capped at 2400 px and has all metadata (including GPS) removed. Uploads over 10 MB are refused; videos (MP4/WebM loops) over 3 MB are refused; hero photos under 800 px wide are refused (`Pages.ts`).
+- **PDFs** go under `docs/<hash>/`, everything else under `media/<hash>/` (`cms/src/lib/media-prefix.ts`). The collection-level `media` folder was dropped from the S3 adapter so each file's own prefix is the whole key.
+- **Every reference** renders through `<picture>` (AVIF → WebP → original, with width/height) from a variants map that `web/scripts/pull-cms.mjs` writes into `cms.json`. The hero's `og` crop is the page's Open Graph image; JSON-LD `logo` uses the CDN brand logo when present. No rich-text upload nodes exist yet; News/Faculty (plans 07, 16) should use the same `image` upload field so they are picked up.
+- **Private files**: `private-files` collection (`cms/src/collections/PrivateFiles.ts`), readable by counsellors, school admins and the group admin only; stored in the new per-stage `ull-<stage>-private-<account>` bucket (CDK) and served as 5-minute presigned links after the access check. Locally they stay in `cms/private-files/`.
+- **Build check**: `deploy/check-cdn-urls.mjs` runs in `deploy-web.sh` after `next build` and fails the deploy on any media reference outside the stage CDN.
+- **Backfill**: `deploy/backfill-media.mjs` (dry run by default, `--apply` to change) re-uploads files with no prefix or missing sizes through the CMS API. Still to do: run it on UAT, then prod, after release.
+- **Video**: as in the table below. A YouTube facade block is not built yet (page builder blocks, plan 07).
 
 ## Remaining work
 
