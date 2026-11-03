@@ -242,7 +242,7 @@ export class StageStack extends cdk.Stack {
       assumedBy: new iam.WebIdentityPrincipal(github.openIdConnectProviderArn, {
         StringEquals: {
           'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-          'token.actions.githubusercontent.com:sub': `repo:elseifai/ull:ref:refs/heads/${stageName}`,
+          'token.actions.githubusercontent.com:sub': `repo:elseifai@229399365/ull@1429253445:ref:refs/heads/${stageName}`,
         },
       }),
     })
@@ -269,7 +269,7 @@ export class StageStack extends cdk.Stack {
       ],
     }))
     githubRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['ssm:GetCommandInvocation', 'ssm:ListCommandInvocations'],
+      actions: ['ssm:GetCommandInvocation', 'ssm:ListCommandInvocations', 'ssm:DescribeInstanceInformation'],
       resources: ['*'],
     }))
 
