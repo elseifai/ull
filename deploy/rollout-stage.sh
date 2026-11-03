@@ -44,10 +44,7 @@ export CDN_BUCKET="$MediaBucketName"
 export S3_BUCKET="$SiteBucketName"
 export CLOUDFRONT_ID="$SiteDistributionId"
 
-if [[ "${SITE_ONLY:-}" == "true" ]]; then
-  export CMS_URL="$SiteUrl"
-else
-  unset CMS_URL || true
+if [[ "${SITE_ONLY:-}" != "true" ]]; then
   SHA="$(git rev-parse --short HEAD)"
   IMAGE="${EcrRepositoryUri}:${SHA}"
   aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin "${EcrRepositoryUri%%/*}"
@@ -56,6 +53,9 @@ else
   docker push "${EcrRepositoryUri}:current"
 fi
 
+# Published pages live in the CMS. A build without CMS_URL ships only the files in the repo,
+# so a page an editor just published never appears (the live 404 on a new slug).
+export CMS_URL="$SiteUrl"
 bash "$ROOT/deploy/deploy-web.sh"
 aws cloudfront create-invalidation --distribution-id "$CdnDistributionId" --paths "/*" >/dev/null || true
 

@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { Header } from "@/components/Header";
+import { CaptureUtm } from "@/components/CaptureUtm";
 import { Footer } from "@/components/Footer";
 import { MobileBar } from "@/components/MobileBar";
 import { JsonLd } from "@/components/JsonLd";
@@ -14,6 +16,9 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         Skip to content
       </a>
       <JsonLd data={schoolJsonLd()} />
+      <Suspense fallback={null}>
+        <CaptureUtm />
+      </Suspense>
       <Header logoSrc={hasImage(img.logo) ? img.logo : undefined} />
       <main id="main" className="flex-1">{children}</main>
       <Footer />

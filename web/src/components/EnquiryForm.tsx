@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { site } from "@/content/site";
+import { campaignForEnquiry } from "@/lib/utm";
 
 export const grades = ["Nursery", "LKG", "UKG", ...Array.from({ length: 10 }, (_, i) => `Grade ${i + 1}`)];
 const priorities = ["Strong academics", "Indian roots", "Sports and fitness", "Skills and hobbies", "All of these"];
@@ -28,7 +29,13 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
       const res = await fetch(`${site.apiUrl}/enquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, type: mode, consent: data.consent === "on", pageUrl: window.location.pathname }),
+        body: JSON.stringify({
+          ...data,
+          ...campaignForEnquiry(),
+          type: mode,
+          consent: data.consent === "on",
+          pageUrl: `${window.location.pathname}${window.location.search}`,
+        }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus("done");

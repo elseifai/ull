@@ -38,5 +38,6 @@ jobs:
           aws-region: ap-south-1
       - name: Publish this stage
         env:
-          SITE_ONLY: ${{ github.event.inputs.site_only == true && 'true' || '' }}
+          # workflow_dispatch inputs arrive as the strings "true" and "false", not booleans.
+          SITE_ONLY: ${{ github.event.inputs.site_only == 'true' && 'true' || '' }}
         run: bash deploy/rollout-stage.sh "${{ github.event.inputs.stage || github.ref_name }}"

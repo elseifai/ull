@@ -21,7 +21,7 @@ const GRADES = ['Nursery', 'LKG', 'UKG', ...Array.from({ length: 10 }, (_, i) =>
 
 const staffOnly: FieldAccess = ({ req }) => Boolean(req.user)
 
-const PUBLIC_FIELDS = ['type', 'parentName', 'phone', 'email', 'childName', 'grade', 'currentSchool', 'preferredDate', 'priority', 'source', 'message', 'consent', 'pageUrl']
+const PUBLIC_FIELDS = ['type', 'parentName', 'phone', 'email', 'childName', 'grade', 'currentSchool', 'preferredDate', 'priority', 'source', 'message', 'consent', 'pageUrl', 'utmSource', 'utmMedium', 'utmCampaign', 'utmContent', 'utmTerm']
 
 const passCode = () => Math.random().toString(36).slice(2, 8).toUpperCase()
 
@@ -31,7 +31,7 @@ export const Enquiries: CollectionConfig = {
   admin: {
     useAsTitle: 'parentName',
     group: 'Admissions',
-    defaultColumns: ['parentName', 'childName', 'grade', 'stage', 'type', 'preferredDate', 'assignedTo', 'createdAt'],
+    defaultColumns: ['parentName', 'childName', 'grade', 'stage', 'utmSource', 'utmCampaign', 'createdAt'],
     listSearchableFields: ['parentName', 'childName', 'phone', 'email'],
   },
   access: {
@@ -62,15 +62,17 @@ export const Enquiries: CollectionConfig = {
         if (operation !== 'create') return
         const first = String(doc.parentName ?? '').split(' ')[0]
         const isVisit = doc.type === 'visit'
+        // Forms on /global/ are the ULL Global waitlist; everything else is ULL Auremont today.
+        const school = String(doc.pageUrl ?? '').startsWith('/global') ? 'ULL Global' : 'ULL Auremont'
         // Do not block the form response on message delivery.
         void notify(req.payload, {
           to: { phone: doc.phone, email: doc.email, name: doc.parentName },
           template: isVisit ? 'visit_requested' : 'enquiry_received',
           params: { name: first, child: doc.childName ?? '', date: doc.preferredDate?.slice(0, 10) ?? '' },
-          subject: isVisit ? 'Your ULL Auremont campus visit request' : 'Thank you for your enquiry',
+          subject: isVisit ? `Your ${school} campus visit request` : 'Thank you for your enquiry',
           text: isVisit
-            ? `Dear ${first}, thank you for requesting a visit to ULL Auremont. We will confirm your slot shortly.`
-            : `Dear ${first}, thank you for your enquiry about ${doc.childName} at ULL Auremont. Our admissions team will call you soon.`,
+            ? `Dear ${first}, thank you for requesting a visit to ${school}. We will confirm your slot shortly.`
+            : `Dear ${first}, thank you for your enquiry about ${doc.childName} at ${school}. Our admissions team will call you soon.`,
         })
       },
     ],
@@ -126,8 +128,23 @@ export const Enquiries: CollectionConfig = {
             { name: 'message', type: 'textarea', maxLength: 2000 },
             { type: 'row', fields: [
               { name: 'consent', type: 'checkbox', label: 'Consented to be contacted' },
-              { name: 'pageUrl', type: 'text', admin: { readOnly: true } },
+              { name: 'pageUrl', type: 'text', admin: { readOnly: true, description: 'Page they submitted from, including the query string.' } },
             ] },
+            {
+              type: 'collapsible',
+              label: 'Campaign link (from the URL they opened)',
+              fields: [
+                { type: 'row', fields: [
+                  { name: 'utmSource', label: 'UTM source', type: 'text', maxLength: 120, admin: { readOnly: true } },
+                  { name: 'utmMedium', label: 'UTM medium', type: 'text', maxLength: 120, admin: { readOnly: true } },
+                  { name: 'utmCampaign', label: 'UTM campaign', type: 'text', maxLength: 120, admin: { readOnly: true } },
+                ] },
+                { type: 'row', fields: [
+                  { name: 'utmContent', label: 'UTM content', type: 'text', maxLength: 120, admin: { readOnly: true } },
+                  { name: 'utmTerm', label: 'UTM term', type: 'text', maxLength: 120, admin: { readOnly: true } },
+                ] },
+              ],
+            },
           ],
         },
         {

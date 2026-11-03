@@ -171,7 +171,15 @@ export interface Enquiry {
   source?: string | null;
   message?: string | null;
   consent?: boolean | null;
+  /**
+   * Page they submitted from, including the query string.
+   */
   pageUrl?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
   assignedTo?: (number | null) | User;
   followUpOn?: string | null;
   notes?:
@@ -239,7 +247,7 @@ export interface Page {
    */
   title: string;
   /**
-   * URL path without slashes, e.g. academics/foundational
+   * URL path without slashes, e.g. auremont/academics/foundational (group pages have no brand prefix)
    */
   slug: string;
   /**
@@ -473,7 +481,10 @@ export interface Page {
         | {
             heading?: string | null;
             lead?: string | null;
-            mode?: ('enquiry' | 'visit') | null;
+            /**
+             * Interest = waitlist for a school that has not opened yet
+             */
+            mode?: ('enquiry' | 'visit' | 'interest') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'enquiry';
@@ -695,6 +706,11 @@ export interface EnquiriesSelect<T extends boolean = true> {
   message?: T;
   consent?: T;
   pageUrl?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  utmContent?: T;
+  utmTerm?: T;
   assignedTo?: T;
   followUpOn?: T;
   notes?:

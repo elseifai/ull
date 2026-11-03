@@ -38,7 +38,7 @@ if [[ "$hook" == ghp_* || "$hook" == github_pat_* ]]; then
   cat >> .env << EOF
 DEPLOY_HOOK_URL=https://api.github.com/repos/elseifai/ull/actions/workflows/deploy.yml/dispatches
 DEPLOY_HOOK_TOKEN=${hook}
-DEPLOY_HOOK_BODY={"ref":"${STAGE}","inputs":{"stage":"${STAGE}","site_only":"true"}}
+DEPLOY_HOOK_BODY={"ref":"${STAGE}","inputs":{"stage":"${STAGE}","site_only":true}}
 EOF
 fi
 
