@@ -65,7 +65,9 @@ if [[ "${SITE_ONLY:-}" == "true" ]]; then
 fi
 
 : "${InstanceId:?}" "${PayloadSecretArn:?}" "${PostgresSecretArn:?}" "${HookSecretArn:?}" "${BackupBucketName:?}"
-: "${PrivateBucketName:?missing: run 'cd infra && npx cdk deploy $STACK' first (adds the private documents bucket)}"
+# The private documents bucket is added by a later stack update. Until that output exists, private
+# files stay on the CMS disk and a publish must still restart the CMS.
+PrivateBucketName="${PrivateBucketName:-}"
 
 python3 - "$ROOT" "$InstanceId" "$IMAGE" "$SiteUrl" "${AltOrigin:-}" "$MediaBucketName" "$CdnHost" "$BackupBucketName" "$PrivateBucketName" "$STAGE" "$PayloadSecretArn" "$PostgresSecretArn" "$HookSecretArn" << 'PY'
 import json, subprocess, sys, time, pathlib, base64
