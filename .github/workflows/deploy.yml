@@ -34,7 +34,7 @@ jobs:
           node-version: 22
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-arn: arn:aws:iam::862330373376:role/ull-${{ github.event.inputs.stage || github.ref_name }}-github
+          role-to-assume: arn:aws:iam::862330373376:role/ull-${{ github.event.inputs.stage || github.ref_name }}-github
           aws-region: ap-south-1
       - name: Publish this stage
         env:
