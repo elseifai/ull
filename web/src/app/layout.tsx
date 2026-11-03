@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { site } from "@/content/site";
 
@@ -23,12 +22,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-IN">
       <head>
-        <Script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5LD9P9KD" strategy="beforeInteractive" />
-        <Script id="gtag-init" strategy="beforeInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());`}
-        </Script>
+        <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5LD9P9KD" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());",
+          }}
+        />
       </head>
       <body className="flex min-h-dvh flex-col">{children}</body>
     </html>
