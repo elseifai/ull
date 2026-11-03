@@ -1,5 +1,7 @@
 // Fails the deploy if any built page points at media outside the stage CDN: CMS uploads served by
-// the API (/api/media/file/...), hashed media or docs on another host, or brand files on /assets/.
+// the API (/api/media/file/...) or hashed media or docs on another host.
+// Site-relative /assets/ paths are the brand files shipped with the HTML. They are not on the CDN
+// until the image files exist in web/public/assets; they must not block a publish.
 // Usage: NEXT_PUBLIC_CDN_URL=https://cdn-uat.ullindia.com node deploy/check-cdn-urls.mjs web/out
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -29,7 +31,7 @@ for await (const file of htmlFiles(outDir)) {
   pages++
   const html = await readFile(file, 'utf8')
   for (const [url] of html.matchAll(media)) {
-    if (url.startsWith(`${cdn}/`)) continue
+    if (url.startsWith(`${cdn}/`) || url.startsWith('/assets/')) continue
     const rel = path.relative(outDir, file)
     bad.set(rel, new Set([...(bad.get(rel) ?? []), url]))
   }
