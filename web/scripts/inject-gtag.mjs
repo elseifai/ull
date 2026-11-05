@@ -8,12 +8,18 @@ const outDir = path.resolve(fileURLToPath(new URL("..", import.meta.url)), proce
 const snippet =
   '<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5LD9P9KD"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(\'js\', new Date());</script>';
 
+// Only remove the tag's own script/link nodes. The page bootstrap is one big <script> that
+// mentions this same snippet inside the React payload. Deleting that script leaves the form as
+// plain HTML, so submit reloads the page and never calls the API.
 function strip(html) {
   return html
     .replace(/<link rel="preload" href="https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-5LD9P9KD"[^>]*>/g, "")
-    .replace(/<script[^>]*src="https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-5LD9P9KD"[^>]*>\s*<\/script>/g, "")
-    .replace(/<script[^>]*>[^<]*GTM-5LD9P9KD[^<]*<\/script>/g, "")
-    .replace(/<script[^>]*>[^<]*function gtag\(\)\{dataLayer\.push\(arguments\);\}[^<]*<\/script>/g, "");
+    .replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/g, (full, attrs, body) => {
+      if (body.includes("__next_f") || body.includes("TURBOPACK")) return full;
+      if (/src="https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-5LD9P9KD"/.test(attrs)) return "";
+      if (body.includes("function gtag()") && body.includes("dataLayer") && body.length < 400) return "";
+      return full;
+    });
 }
 
 async function htmlFiles(dir) {
@@ -31,7 +37,11 @@ const files = await htmlFiles(outDir);
 let changed = 0;
 for (const file of files) {
   const html = await readFile(file, "utf8");
+  const hadFlight = html.includes("__next_f");
   const next = strip(html).replace(/<head([^>]*)>/, `<head$1>${snippet}`);
+  if (hadFlight && !next.includes("__next_f")) {
+    throw new Error(`[gtag] refused to remove the page bootstrap from ${file}`);
+  }
   if (next === html) continue;
   await writeFile(file, next);
   changed += 1;
