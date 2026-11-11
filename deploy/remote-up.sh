@@ -13,11 +13,45 @@ mountpoint -q /opt/ull
 docker info >/dev/null
 
 REGION="${AWS_REGION:-ap-south-1}"
+# One JSON secret for the OTP widget. Real keys stay in Secrets Manager.
+# MSG91_SECRET_ARN is set when the stack exports it; otherwise use the stage name.
+MSG91_SECRET_ID="${MSG91_SECRET_ARN:-ull/${STAGE}/msg91}"
 payload=$(aws secretsmanager get-secret-value --secret-id "$PAYLOAD_SECRET_ARN" --query SecretString --output text --region "$REGION")
 postgres=$(aws secretsmanager get-secret-value --secret-id "$POSTGRES_SECRET_ARN" --query SecretString --output text --region "$REGION")
 hook=$(aws secretsmanager get-secret-value --secret-id "$HOOK_SECRET_ARN" --query SecretString --output text --region "$REGION")
+msg91=$(aws secretsmanager get-secret-value --secret-id "$MSG91_SECRET_ID" --query SecretString --output text --region "$REGION")
 
 umask 077
+# Validate before replacing .env. A missing or empty secret must leave the running CMS alone.
+msg91_env=$(mktemp)
+trap 'rm -f "$msg91_env"' EXIT
+MSG91_JSON="$msg91" python3 - "$msg91_env" << 'PY'
+import json, os, sys
+path = sys.argv[1]
+raw = os.environ.get("MSG91_JSON", "")
+try:
+    data = json.loads(raw)
+except json.JSONDecodeError:
+    sys.exit("MSG91 secret must be a JSON object with MSG91_WIDGET_ID, MSG91_TOKEN_AUTH, and MSG91_AUTHKEY")
+if not isinstance(data, dict):
+    sys.exit("MSG91 secret must be a JSON object with MSG91_WIDGET_ID, MSG91_TOKEN_AUTH, and MSG91_AUTHKEY")
+keys = ("MSG91_WIDGET_ID", "MSG91_TOKEN_AUTH", "MSG91_AUTHKEY")
+missing = [key for key in keys if not str(data.get(key) or "").strip()]
+if missing:
+    sys.exit("MSG91 secret is missing non-empty values for " + ", ".join(missing))
+
+def quote(value: str) -> str:
+    # Single quotes stay literal in Compose's env file. A backslash would change that.
+    if any(char in value for char in "\n\r\x00\\"):
+        sys.exit("MSG91 secret values must be a single line without backslashes")
+    return "'" + value.replace("'", "\\'") + "'"
+
+with open(path, "w", encoding="utf-8") as handle:
+    for key in keys:
+        handle.write(f"{key}={quote(str(data[key]).strip())}\n")
+PY
+unset msg91 MSG91_JSON
+
 cat > .env << EOF
 CMS_IMAGE=${CMS_IMAGE}
 POSTGRES_PASSWORD=${postgres}
@@ -33,6 +67,8 @@ AWS_REGION=${REGION}
 SES_REGION=${REGION}
 STAGE=${STAGE}
 EOF
+cat "$msg91_env" >> .env
+rm -f "$msg91_env"
 
 if [[ "$hook" == ghp_* || "$hook" == github_pat_* ]]; then
   cat >> .env << EOF
