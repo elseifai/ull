@@ -87,6 +87,13 @@ export class StageStack extends cdk.Stack {
       description: 'Replace the generated value with a GitHub PAT (actions:write) so publishing a page rebuilds this stage.',
       generateSecretString: { excludePunctuation: true, passwordLength: 40 },
     })
+    // Placeholder only. Replace the generated string with JSON before OTP forms can accept leads:
+    // {"MSG91_WIDGET_ID":"...","MSG91_TOKEN_AUTH":"...","MSG91_AUTHKEY":"..."}
+    const msg91Secret = new secretsmanager.Secret(this, 'Msg91Secret', {
+      secretName: `ull/${stageName}/msg91`,
+      description: 'JSON with MSG91_WIDGET_ID, MSG91_TOKEN_AUTH, and MSG91_AUTHKEY. Replace the generated value before website forms can accept leads.',
+      generateSecretString: { excludePunctuation: true, passwordLength: 32 },
+    })
 
     const role = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
@@ -100,6 +107,7 @@ export class StageStack extends cdk.Stack {
     payloadSecret.grantRead(role)
     postgresSecret.grantRead(role)
     hookSecret.grantRead(role)
+    msg91Secret.grantRead(role)
     role.addToPolicy(new iam.PolicyStatement({
       actions: ['ses:SendEmail', 'ses:SendRawEmail'],
       resources: [`arn:aws:ses:ap-south-1:${account}:identity/*`],
@@ -291,6 +299,7 @@ export class StageStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'PayloadSecretArn', { value: payloadSecret.secretArn })
     new cdk.CfnOutput(this, 'PostgresSecretArn', { value: postgresSecret.secretArn })
     new cdk.CfnOutput(this, 'HookSecretArn', { value: hookSecret.secretArn })
+    new cdk.CfnOutput(this, 'Msg91SecretArn', { value: msg91Secret.secretArn })
     new cdk.CfnOutput(this, 'GithubRoleArn', { value: githubRole.roleArn })
   }
 }
