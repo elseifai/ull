@@ -1,4 +1,4 @@
-import type { CollectionConfig, FieldAccess } from 'payload'
+import { APIError, type CollectionConfig, type FieldAccess } from 'payload'
 import { anyone, canWorkAdmissions, isAdmin } from '../access/roles'
 import { notify } from '../lib/notify'
 
@@ -45,7 +45,12 @@ export const Enquiries: CollectionConfig = {
       ({ data, operation, req }) => {
         if (!data) return data
         // Website visitors may only set the form fields; everything else is staff-only.
+        // Anonymous creates are rejected unless the shared OTP endpoint has already
+        // verified the MSG91 token and marked this request.
         if (operation === 'create' && !req.user) {
+          if (req.context?.leadOtpVerified !== true) {
+            throw new APIError('Verify your mobile number before sending this form.', 401)
+          }
           const clean: Record<string, unknown> = {}
           for (const k of PUBLIC_FIELDS) if (data[k] !== undefined && data[k] !== '') clean[k] = data[k]
           if (clean.type !== 'visit') clean.type = 'enquiry'

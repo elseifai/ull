@@ -12,6 +12,7 @@ import { Pages } from './collections/Pages'
 import { Enquiries } from './collections/Enquiries'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
+import { leadOtpEndpoints } from './endpoints/lead-otp'
 import { env } from './lib/env'
 import { storagePlugins } from './lib/storage'
 
@@ -47,6 +48,7 @@ export default buildConfig({
   },
   collections: [Enquiries, Pages, Media, PrivateFiles, Users],
   globals: [SiteSettings],
+  endpoints: leadOtpEndpoints,
   cors: origins,
   csrf: origins,
   editor: lexicalEditor(),
