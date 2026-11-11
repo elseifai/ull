@@ -53,13 +53,14 @@ check('counsellor cannot make themselves admin', !me.json?.user?.roles?.includes
 const ownName = await api('PATCH', `/users/${users.counsellor.id}`, { token: users.counsellor.token, body: { name: 'Renamed counsellor' } })
 check('staff can update their own profile', ok(ownName), ownName.status)
 
-// --- Website form (public) ---
-const pub = await api('POST', '/enquiries', { body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, stage: 'enrolled', notes: [{ note: 'injected' }], pageUrl: '/reimagining-education/?utm_source=parking&utm_content=parking_gate_1', utmSource: 'parking', utmMedium: 'qr', utmCampaign: 'auremont_202611_reimagining', utmContent: 'parking_gate_1', utmTerm: 'nagarbhavi' } })
-check('website visit request is accepted', ok(pub), pub.status)
+// --- Website form (public). OTP is required; staff still record walk-ins directly. ---
+const anon = await api('POST', '/enquiries', { body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, stage: 'enrolled', notes: [{ note: 'injected' }], pageUrl: '/reimagining-education/?utm_source=parking&utm_content=parking_gate_1', utmSource: 'parking', utmMedium: 'qr', utmCampaign: 'auremont_202611_reimagining', utmContent: 'parking_gate_1', utmTerm: 'nagarbhavi' } })
+check('website form without OTP is rejected', anon.status === 401, anon.status)
+const pub = await api('POST', '/enquiries', { token: admin, body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, pageUrl: '/reimagining-education/?utm_source=parking&utm_content=parking_gate_1', utmSource: 'parking', utmMedium: 'qr', utmCampaign: 'auremont_202611_reimagining', utmContent: 'parking_gate_1', utmTerm: 'nagarbhavi' } })
+check('staff can still record a visit', ok(pub), pub.status)
 const pubId = pub.json?.doc?.id
 const pubDoc = (await api('GET', `/enquiries/${pubId}`, { token: admin })).json
-check('website cannot set stage or notes', pubDoc?.stage === 'visitBooked' && !(pubDoc?.notes?.length), `${pubDoc?.stage}, notes ${pubDoc?.notes?.length}`)
-check('website enquiry keeps the campaign link', pubDoc?.utmSource === 'parking' && pubDoc?.utmContent === 'parking_gate_1' && pubDoc?.utmCampaign === 'auremont_202611_reimagining', JSON.stringify({ utmSource: pubDoc?.utmSource, utmContent: pubDoc?.utmContent }))
+check('staff visit keeps the campaign link', pubDoc?.utmSource === 'parking' && pubDoc?.utmContent === 'parking_gate_1' && pubDoc?.utmCampaign === 'auremont_202611_reimagining', JSON.stringify({ utmSource: pubDoc?.utmSource, utmContent: pubDoc?.utmContent }))
 check('visit gets a pass code', Boolean(pubDoc?.visit?.passCode))
 const anonRead = await api('GET', '/enquiries')
 check('public cannot read enquiries', !ok(anonRead) || !anonRead.json?.docs?.length, anonRead.status)
