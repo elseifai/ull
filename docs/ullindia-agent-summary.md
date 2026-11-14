@@ -1,12 +1,12 @@
 # ULL India agent summary
 
-Read this at the start of every session before changing the project. Date: 2026-11-13.
+Read this at the start of every session before changing the project. Date: 2026-11-14.
 
 Last weekly report: none. [#199](https://github.com/elseifai/ull/issues/199) (weekly board report to lsave.ai@gmail.com and president@ullindia.com) is still open.
 
 ## Repo
 
-GitHub: `elseifai/ull` (`https://github.com/elseifai/ull`). Default branch `main`. Stage branches `uat` and `prod` deploy; pushing them runs `.github/workflows/deploy.yml`. Do not push to `uat` or `prod`, and do not deploy, unless the task is an explicit promotion.
+GitHub: `elseifai/ull` (`https://github.com/elseifai/ull`). GitHub's default branch is still `main`. Fixes do not land there. Every fix lands on `dev` first, is tested there, then is promoted to `uat` for operations review, and only then to `prod` (live). Pushing `uat` or `prod` runs `.github/workflows/deploy.yml`. Pushing `dev` or `main` does not. There is no `dev` AWS stage. Do not push to `uat` or `prod`, and do not deploy, unless the task is an explicit promotion.
 
 Owner's Mac checkout: `~/Desktop/Client Projects/admissionportal`.
 
@@ -18,8 +18,13 @@ Full technical picture: `docs/it-support.md`. Business picture: `docs/business-o
 
 - Keep tickets small and independently shippable. Epics are parents; do the work in a sub-issue.
 - Every PR updates `docs/it-support.md` and `docs/business-ops.md`, or the PR body explains why neither changed. Update this summary when the repo layout, conventions, labels, open decisions, or roadmap status change.
-- Docs-only PR: documentation and templates only. Merge into `main`. Do not promote it to `uat` or `prod` and do not deploy.
-- Code PR: issue → branch → pull request into `main` → merge `main` into `uat` (deploys UAT) → merge `uat` into `prod` (deploys production). `main` itself does not deploy.
+- Docs-only PR: documentation and templates only. Merge into `dev`. Do not promote it to `uat` or `prod` and do not deploy.
+- Code PR: issue → branch → pull request into `dev` → test on `dev` → merge `dev` into `uat` (deploys UAT for operations review) → merge `uat` into `prod` (deploys the live site). Do not open the pull request against `main`.
+- No Jira. GitHub issues and the ULL India Roadmap project are the only tracker. [#198](https://github.com/elseifai/ull/issues/198) is closed.
+- The in-house CRM code is the CMS admin panel at `/admin` in this repo. [#200](https://github.com/elseifai/ull/issues/200) is closed. Do not look for a separate CRM repo.
+- The third-party CRM is Orggen. Its API document has not arrived. [#150](https://github.com/elseifai/ull/issues/150) and [#153](https://github.com/elseifai/ull/issues/153) stay blocked.
+- ULL Global is the IB school. Auremont is the correct spelling of the Nagarbhavi CBSE school. Never write Ormond.
+- The Mac's local work, including the updated plans, is committed in [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, which closes [#197](https://github.com/elseifai/ull/issues/197). On 14 Nov 2026 that pull request and #197 were still open. Do not treat those plan files as present on this branch.
 - Content team never publishes directly. Validate phones, emails, addresses, fees, and names first. Contact and lead data goes to the admissions desk. Page copy and media go in as a CMS draft. Anything unclear goes to the WhatsApp group `353 ULL CRM`. The CMS does not enforce this yet ([#195](https://github.com/elseifai/ull/issues/195), [#196](https://github.com/elseifai/ull/issues/196)).
 - Do not invent roadmap status. Read `gh issue list` and the epic sub-issues. Do not write secret values into docs or commits.
 
@@ -43,14 +48,21 @@ ULL India Roadmap (GitHub Project). Link pending.
 
 ## Open items
 
-All 24 epics are open. No issue in the repo is closed. Progress on 2026-11-13 is 0 closed sub-issues on every epic. The table, with issue links, is in `docs/business-ops.md`.
+All 24 epics are open. On 2026-11-14 the only closed issues are [#198](https://github.com/elseifai/ull/issues/198) and [#200](https://github.com/elseifai/ull/issues/200), so epic 24 is 2 of 8 tasks closed and every other epic is still 0 closed. The table is in `docs/business-ops.md`.
 
-Blocked, waiting on the owner:
+Decided on 14 Nov 2026:
+
+- No Jira. Tracker is GitHub issues plus the ULL India Roadmap project.
+- In-house CRM is `/admin` in this repo.
+- Third-party CRM is Orggen. API document not received.
+- ULL Global = IB school. Auremont = Nagarbhavi CBSE school. Not Ormond.
+- Mac plans and other local work: [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, closes #197 when merged. Not merged on this date.
+
+Still blocked:
 
 - [#88](https://github.com/elseifai/ull/issues/88) — Entra ID app and role groups, blocked on the Microsoft 365 purchase (epic 23).
-- [#150](https://github.com/elseifai/ull/issues/150) — Orggen ('Origin') CRM endpoint, auth, payload, and sandbox. Not provided.
-- [#153](https://github.com/elseifai/ull/issues/153) — Orggen adapter, blocked on the same missing endpoint and payload.
-- [#198](https://github.com/elseifai/ull/issues/198) — Jira or GitHub-only for business requests. Needs Vaibhav's answer.
-- [#200](https://github.com/elseifai/ull/issues/200) — First-party CRM in this repo's `/admin`, or a separate repo. Needs Vaibhav's answer. No separate CRM repo was found when the ticket was opened.
+- [#150](https://github.com/elseifai/ull/issues/150) — Orggen API endpoint, auth, payload, and sandbox. The API document has not arrived.
+- [#153](https://github.com/elseifai/ull/issues/153) — Orggen adapter, blocked on that same missing document.
+- [#197](https://github.com/elseifai/ull/issues/197) — still open until PR #202 merges.
 
-Also open, and easy to get wrong: parent login is a holding page, not a portal; the `editor` role can publish even though the content rule says the content team must not; a CMS publish rebuilds the site only after `ull/<stage>/deploy-hook-token` is a GitHub token whose value starts with `ghp_` or `github_pat_`.
+Also open, and easy to get wrong: parent login is a holding page, not a portal; the `editor` role can publish even though the content rule says the content team must not; a CMS publish rebuilds the site only after `ull/<stage>/deploy-hook-token` is a GitHub token whose value starts with `ghp_` or `github_pat_`; do not open pull requests against `main`.

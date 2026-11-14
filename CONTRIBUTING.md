@@ -13,17 +13,23 @@ Also update `docs/ullindia-agent-summary.md` when the change affects how the ass
 
 ## Flow
 
-1. Start from a GitHub issue. Keep the issue small enough to ship on its own.
-2. Branch from `main`. Open a pull request back into `main`.
-3. Merge to `main` does not deploy.
-4. Promote by merging `main` into `uat` and pushing `uat`. That push runs `.github/workflows/deploy.yml` and updates `uat.ullindia.com`.
-5. When UAT is accepted, merge `uat` into `prod` and push `prod`. That updates `ullindia.com` and `www.ullindia.com`.
+Every fix lands on `dev` first, is tested there, then is promoted to `uat` for operations review, and only then goes to `prod` (live). Do not open the pull request against `main`. GitHub's default branch is still `main`; it is not where this work lands.
 
-A docs-only pull request merges to `main` and stops there. Do not push it to `uat` or `prod`, and do not run a deploy, to publish documentation.
+1. Start from a GitHub issue. Keep the issue small enough to ship on its own. There is no Jira. GitHub issues and the ULL India Roadmap project are the only tracker.
+2. Branch from `dev`. Open a pull request back into `dev`.
+3. Merge to `dev` does not deploy. Test the change on `dev`.
+4. Promote by merging `dev` into `uat` and pushing `uat`. That push runs `.github/workflows/deploy.yml` and updates `uat.ullindia.com` for operations review.
+5. Only after that review, merge `uat` into `prod` and push `prod`. That updates the live site, `ullindia.com` and `www.ullindia.com`.
+
+A docs-only pull request merges to `dev` and stops there. Do not push it to `uat` or `prod`, and do not run a deploy, to publish documentation.
 
 ## Content
 
-The content team never publishes directly. Submissions are validated before they are entered: phone numbers, email addresses, campus addresses, fees, and names (ULL India, ULL Auremont, ULL Global).
+The content team never publishes directly. Submissions are validated before they are entered: phone numbers, email addresses, campus addresses, fees, and names.
+
+ULL Global is the IB school. Auremont is the correct spelling of the Nagarbhavi CBSE school. Do not write Ormond.
+
+The in-house admissions system is the CMS admin panel at `/admin` in this repo. The third-party CRM is Orggen. Its API document has not arrived; do not invent the connection.
 
 - Contact and lead data goes into the Admissions & Visitor Desk.
 - Page copy and media go into the CMS as a draft for review.

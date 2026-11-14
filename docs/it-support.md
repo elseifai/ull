@@ -1,6 +1,6 @@
 # ULL India — IT support and developer guide
 
-Technical source of truth for the website, the Admissions & Visitor Desk, and the AWS stacks. Facts below were checked against this repository on 2026-11-13. Where a plan file describes a target that the code does not implement, this guide follows the code.
+Technical source of truth for the website, the Admissions & Visitor Desk, and the AWS stacks. Architecture facts below were checked against this repository. The release rule and the decisions in the 14 Nov 2026 section were recorded from Vaibhav on that date. Where a plan file describes a target that the code does not implement, this guide follows the code.
 
 Update this file in every pull request, or say in the PR why it did not change. Sister document for non-technical staff: `docs/business-ops.md`. Session brief for the assistant: `docs/ullindia-agent-summary.md`.
 
@@ -102,10 +102,10 @@ Workflow: `.github/workflows/deploy.yml`. Name: Deploy.
 
 Triggers:
 
-- `push` to branch `uat` or `prod`. `main` does not deploy.
+- `push` to branch `uat` or `prod`. A push to `dev` does not deploy. A push to `main` does not deploy either.
 - `workflow_dispatch` with input `stage` (`uat` or `prod`) and `site_only` (boolean, default false).
 
-The job checks out the workflow ref, uses Node 22, and assumes `arn:aws:iam::862330373376:role/ull-<stage>-github` in `ap-south-1`. The role trust allows only `refs/heads/uat` or `refs/heads/prod`, so a dispatch whose ref is `main` cannot assume the role. The CMS publish hook dispatches with `ref` set to the stage branch for that reason.
+The job checks out the workflow ref, uses Node 22, and assumes `arn:aws:iam::862330373376:role/ull-<stage>-github` in `ap-south-1`. The role trust allows only `refs/heads/uat` or `refs/heads/prod`, so a dispatch whose ref is `dev` or `main` cannot assume the role. The CMS publish hook dispatches with `ref` set to the stage branch for that reason.
 
 Concurrency group `deploy-<stage>`, `cancel-in-progress: false`.
 
@@ -139,11 +139,15 @@ Publishing a CMS page does not deploy new code. `cms/src/lib/rebuild.ts` debounc
 
 Promotion is a git operation. This repo has no promote script.
 
-1. Open a pull request into `main` and merge it. That does not deploy.
-2. Merge `main` into `uat` and push `uat`. The workflow deploys UAT.
-3. After UAT is accepted, merge `uat` into `prod` and push `prod`. The workflow deploys production.
+Release flow, decided 14 Nov 2026: every fix lands on `dev` first, is tested there, then is promoted to `uat` for operations review, and only then goes to `prod` (live).
 
-Do not push docs-only commits to `uat` or `prod` just to publish them. Those branches deploy the application.
+1. Open the pull request into `dev` and merge it. Test it on `dev`. That merge does not deploy. There is no `dev` stack in `infra/bin/ull.ts`; UAT and production are the only hosted stages.
+2. Merge `dev` into `uat` and push `uat`. The workflow deploys UAT (`uat.ullindia.com`) for operations review.
+3. Only after that review, merge `uat` into `prod` and push `prod`. The workflow deploys production, the live site (`ullindia.com` and `www.ullindia.com`).
+
+GitHub's default branch is still `main`. Do not open feature pull requests against `main`. `main` is not where fixes land.
+
+A docs-only pull request merges to `dev` and stops. Do not push it to `uat` or `prod`. Those branches deploy the application.
 
 ## Secrets and environment variables
 
@@ -206,16 +210,26 @@ Grades: Nursery, LKG, UKG, Grade 1 through Grade 10.
 
 The content-team rule in `docs/business-ops.md` (they do not publish directly) is an operating rule. The `editor` role can still update and publish pages in Payload today. Issue `#66` (block publish on failed SEO checks) and issue `#195` (content validation) are open. Do not describe the CMS as enforcing that rule.
 
+Enquiry creation labels a page URL that starts with `/global` as ULL Global and every other page as ULL Auremont (`cms/src/collections/Enquiries.ts`). ULL Global is the IB school. Auremont is the spelling of the Nagarbhavi CBSE school. Do not introduce the spelling Ormond.
+
+## Decisions recorded on 14 Nov 2026
+
+- No Jira. GitHub issues and the ULL India Roadmap project are the only tracker. [#198](https://github.com/elseifai/ull/issues/198) is closed.
+- The in-house CRM code is this repo's CMS admin at `/admin` (the Admissions & Visitor Desk). [#200](https://github.com/elseifai/ull/issues/200) is closed. Do not look for a second CRM repository.
+- The third-party CRM is Orggen. Its API document has not arrived. [#150](https://github.com/elseifai/ull/issues/150) and [#153](https://github.com/elseifai/ull/issues/153) stay open and blocked. Epic [#148](https://github.com/elseifai/ull/issues/148) still has "Zoho CRM" in the GitHub title; that is not a second choice.
+- ULL Global is the IB school. Auremont, not Ormond, is the Nagarbhavi CBSE school.
+- The Mac checkout's local work, including the updated plans, is committed in [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, which closes [#197](https://github.com/elseifai/ull/issues/197). That pull request was still open on 14 Nov 2026, and #197 was still open with it. This branch does not contain those plan files.
+
 ## Runbooks
 
 ### Deploy
 
 Normal path:
 
-1. Merge the pull request into `main`.
-2. Merge `main` into `uat` and push `origin uat`. Watch the Deploy workflow. It must finish Success. `rollout-stage.sh` prints `Deployed uat at <SiteUrl>`.
-3. Check `https://uat.ullindia.com` and `https://uat.ullindia.com/admin`.
-4. Merge `uat` into `prod` and push `origin prod`. Check `https://ullindia.com` and `https://www.ullindia.com`.
+1. Merge the pull request into `dev` and test it there. That merge does not deploy.
+2. Merge `dev` into `uat` and push `origin uat`. Watch the Deploy workflow. It must finish Success. `rollout-stage.sh` prints `Deployed uat at <SiteUrl>`.
+3. Operations reviews `https://uat.ullindia.com` and `https://uat.ullindia.com/admin`.
+4. Only after that review, merge `uat` into `prod` and push `origin prod`. Check the live site, `https://ullindia.com` and `https://www.ullindia.com`.
 
 Site-only republish (no CMS image), after the hook token is a real GitHub token:
 
@@ -301,3 +315,4 @@ Restore a media or private object from S3 versioning only when you have the vers
 | 2026-11-03 | Deploys build published CMS pages; enquiries store UTM fields; Google tag injected on exported HTML; production deploy role and instance wiring fixes. | `ac80a15` through `77ad1e5` |
 | 2026-11-11 | Public enquiry and visit forms require a verified MSG91 OTP. The CMS loads the MSG91 JSON secret on start and will not replace a good `.env` when that secret is invalid. | `#2`, `#3` |
 | 2026-11-13 | Added this guide, `docs/business-ops.md`, `docs/ullindia-agent-summary.md`, the PR template, and `CONTRIBUTING.md`. No application or infrastructure code changed. | this PR |
+| 2026-11-14 | Release flow is `dev` (test), then `uat` (operations review), then `prod` (live). No Jira. In-house CRM is `/admin`. Third-party CRM is Orggen; its API document has not arrived. ULL Global is the IB school; Auremont is the Nagarbhavi CBSE spelling. Mac plans are in PR #202, which closes #197. | Vaibhav, 14 Nov 2026; issues #198 and #200 closed; #150, #153, and #197 still open; PR #202 |
