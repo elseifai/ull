@@ -1,18 +1,18 @@
 import { img } from "./assets";
 import type { Page } from "./types";
 
-const bc = [{ label: "Academics", href: "/academics/" }];
+const bc = [{ label: "Academics", href: "/auremont/academics/" }];
 const visitCta = {
   type: "cta" as const,
   heading: "See learning in action",
   text: "Visit any working day by appointment, or come to our next Term Showcase.",
-  primary: { label: "Book a campus visit", href: "/admissions/visit/" },
-  secondary: { label: "Enquire now", href: "/admissions/enquire/" },
+  primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
+  secondary: { label: "Enquire now", href: "/auremont/admissions/enquire/" },
 };
 
 export const academicsPages: Page[] = [
   {
-    slug: "academics",
+    slug: "auremont/academics",
     title: "Academics: our approach",
     description:
       "CBSE curriculum shaped by NCF 2023, taught through the five-step Auremont Learning Cycle: Connect, Experience, Clarify, Apply, Reflect. Nursery to Grade 10.",
@@ -36,10 +36,10 @@ export const academicsPages: Page[] = [
         type: "subnav",
         heading: "Four stages, Nursery to Grade 10",
         items: [
-          { title: "Foundational", tag: "Nursery–Grade 2", image: img.nursery, href: "/academics/foundational/", text: "Learning through play, stories and wonder.", accent: "gold" },
-          { title: "Preparatory", tag: "Grades 3–5", image: img.primary, href: "/academics/preparatory/", text: "From play to purposeful learning.", accent: "orange" },
-          { title: "Middle", tag: "Grades 6–8", image: img.senior, href: "/academics/middle/", text: "Thinking like mathematicians, scientists and historians.", accent: "teal" },
-          { title: "Secondary", tag: "Grades 9–10", image: img.vocal, href: "/academics/secondary/", text: "Depth, discipline and readiness for the board exam.", accent: "navy" },
+          { title: "Foundational", tag: "Nursery–Grade 2", image: img.nursery, href: "/auremont/academics/foundational/", text: "Learning through play, stories and wonder.", accent: "gold" },
+          { title: "Preparatory", tag: "Grades 3–5", image: img.primary, href: "/auremont/academics/preparatory/", text: "From play to purposeful learning.", accent: "orange" },
+          { title: "Middle", tag: "Grades 6–8", image: img.senior, href: "/auremont/academics/middle/", text: "Thinking like mathematicians, scientists and historians.", accent: "teal" },
+          { title: "Secondary", tag: "Grades 9–10", image: img.vocal, href: "/auremont/academics/secondary/", text: "Depth, discipline and readiness for the board exam.", accent: "navy" },
         ],
       },
       {
@@ -101,7 +101,7 @@ export const academicsPages: Page[] = [
     ],
   },
   {
-    slug: "academics/foundational",
+    slug: "auremont/academics/foundational",
     title: "Foundational Stage: Nursery to Grade 2",
     description:
       "Nursery, LKG, UKG, Grade 1 and Grade 2 at ULL Auremont: learning through play, stories, rhymes and movement, with no tests in the early years.",
@@ -194,7 +194,7 @@ export const academicsPages: Page[] = [
     ],
   },
   {
-    slug: "academics/preparatory",
+    slug: "auremont/academics/preparatory",
     title: "Preparatory Stage: Grades 3 to 5",
     description:
       "Grades 3 to 5 at ULL Auremont: fluent reading, confident maths, hands-on EVS, arts, PE, computing and robotics, with Indian roots in every subject.",
@@ -271,7 +271,7 @@ export const academicsPages: Page[] = [
     ],
   },
   {
-    slug: "academics/middle",
+    slug: "auremont/academics/middle",
     title: "Middle Stage: Grades 6 to 8",
     description:
       "Grades 6 to 8 at ULL Auremont: NCERT Ganita Prakash, Curiosity and Exploring Society, investigations, debate, skills for work, computing and the Summit Pathway.",
@@ -356,7 +356,7 @@ export const academicsPages: Page[] = [
     ],
   },
   {
-    slug: "academics/secondary",
+    slug: "auremont/academics/secondary",
     title: "Secondary Stage: Grades 9 and 10",
     description:
       "Grades 9 and 10 at ULL Auremont: deep subject understanding and full preparation for the CBSE Class 10 board exam, with stream guidance.",
@@ -440,7 +440,7 @@ export const academicsPages: Page[] = [
     ],
   },
   {
-    slug: "academics/assessment",
+    slug: "auremont/academics/assessment",
     title: "Assessment and progress",
     description:
       "How ULL Auremont assesses learning at each stage, and the whole-child report: subjects, skills, fitness, hobbies, life skills and a Strengths Profile.",

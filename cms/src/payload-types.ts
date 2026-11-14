@@ -68,8 +68,10 @@ export interface Config {
   blocks: {};
   collections: {
     enquiries: Enquiry;
+    'parent-expectations': ParentExpectation;
     pages: Page;
     media: Media;
+    'private-files': PrivateFile;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -79,8 +81,10 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    'parent-expectations': ParentExpectationsSelect<false> | ParentExpectationsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'private-files': PrivateFilesSelect<false> | PrivateFilesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -169,7 +173,15 @@ export interface Enquiry {
   source?: string | null;
   message?: string | null;
   consent?: boolean | null;
+  /**
+   * Page they submitted from, including the query string.
+   */
   pageUrl?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
   assignedTo?: (number | null) | User;
   followUpOn?: string | null;
   notes?:
@@ -228,6 +240,75 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parent-expectations".
+ */
+export interface ParentExpectation {
+  id: number;
+  parentName: string;
+  phone: string;
+  email?: string | null;
+  childName?: string | null;
+  grade?:
+    | (
+        | 'Nursery'
+        | 'LKG'
+        | 'UKG'
+        | 'Grade 1'
+        | 'Grade 2'
+        | 'Grade 3'
+        | 'Grade 4'
+        | 'Grade 5'
+        | 'Grade 6'
+        | 'Grade 7'
+        | 'Grade 8'
+        | 'Grade 9'
+        | 'Grade 10'
+      )
+    | null;
+  priority: (
+    | 'Quality of education'
+    | 'Communication skills'
+    | 'Overall personality development'
+    | 'Sports and extracurricular activities'
+    | 'Safety and security'
+    | 'Discipline and values'
+  )[];
+  learningEnvironment: (
+    'Play-based learning' | 'Activity-based learning' | 'Academic-focused learning' | 'Balanced learning approach'
+  )[];
+  teachers: (
+    'Experienced teachers' | 'Individual attention' | 'Friendly and caring teachers' | 'Regular parent communication'
+  )[];
+  skills: ('English communication' | 'Confidence' | 'Creativity' | 'Social skills' | 'Leadership')[];
+  concern: (
+    | 'Difficulty adjusting'
+    | 'Lack of individual attention'
+    | 'Academic pressure'
+    | 'Safety concerns'
+    | 'Communication development'
+  )[];
+  longTerm: (
+    | 'Strong academic foundation'
+    | 'Confidence and independence'
+    | 'Good communication skills'
+    | 'Well-rounded personality'
+    | 'Preparation for future grades'
+  )[];
+  consent?: boolean | null;
+  /**
+   * Page they submitted from, including the query string.
+   */
+  pageUrl?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
@@ -237,7 +318,7 @@ export interface Page {
    */
   title: string;
   /**
-   * URL path without slashes, e.g. academics/foundational
+   * URL path without slashes, e.g. auremont/academics/foundational (group pages have no brand prefix)
    */
   slug: string;
   /**
@@ -471,10 +552,23 @@ export interface Page {
         | {
             heading?: string | null;
             lead?: string | null;
-            mode?: ('enquiry' | 'visit') | null;
+            /**
+             * Interest = waitlist for a school that has not opened yet
+             */
+            mode?: ('enquiry' | 'visit' | 'interest') | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'enquiry';
+          }
+        | {
+            heading?: string | null;
+            /**
+             * Shown above the form. The questions themselves are fixed.
+             */
+            lead?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'parentExpectations';
           }
       )[]
     | null;
@@ -489,9 +583,11 @@ export interface Page {
 export interface Media {
   id: number;
   /**
-   * Describe the image for Google and screen readers.
+   * Describe the image (or name the document) for Google and screen readers.
    */
   alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -504,7 +600,31 @@ export interface Media {
   focalX?: number | null;
   focalY?: number | null;
   sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    thumbAvif?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
     card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    cardAvif?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -520,7 +640,47 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
+    heroAvif?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "private-files".
+ */
+export interface PrivateFile {
+  id: number;
+  kind: 'applicantDocument' | 'recording' | 'report' | 'portfolio';
+  enquiry?: (number | null) | Enquiry;
+  note?: string | null;
+  uploadedBy?: (number | null) | User;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -551,12 +711,20 @@ export interface PayloadLockedDocument {
         value: number | Enquiry;
       } | null)
     | ({
+        relationTo: 'parent-expectations';
+        value: number | ParentExpectation;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: number | Page;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'private-files';
+        value: number | PrivateFile;
       } | null)
     | ({
         relationTo: 'users';
@@ -623,6 +791,11 @@ export interface EnquiriesSelect<T extends boolean = true> {
   message?: T;
   consent?: T;
   pageUrl?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  utmContent?: T;
+  utmTerm?: T;
   assignedTo?: T;
   followUpOn?: T;
   notes?:
@@ -643,6 +816,32 @@ export interface EnquiriesSelect<T extends boolean = true> {
         checkedOutAt?: T;
         visitors?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parent-expectations_select".
+ */
+export interface ParentExpectationsSelect<T extends boolean = true> {
+  parentName?: T;
+  phone?: T;
+  email?: T;
+  childName?: T;
+  grade?: T;
+  priority?: T;
+  learningEnvironment?: T;
+  teachers?: T;
+  skills?: T;
+  concern?: T;
+  longTerm?: T;
+  consent?: T;
+  pageUrl?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  utmContent?: T;
+  utmTerm?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -875,6 +1074,14 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        parentExpectations?:
+          | T
+          | {
+              heading?: T;
+              lead?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -886,6 +1093,8 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -900,7 +1109,37 @@ export interface MediaSelect<T extends boolean = true> {
   sizes?:
     | T
     | {
+        thumb?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        thumbAvif?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
         card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        cardAvif?:
           | T
           | {
               url?: T;
@@ -920,7 +1159,50 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
+        heroAvif?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "private-files_select".
+ */
+export interface PrivateFilesSelect<T extends boolean = true> {
+  kind?: T;
+  enquiry?: T;
+  note?: T;
+  uploadedBy?: T;
+  prefix?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileBar } from "@/components/MobileBar";
+import { CaptureUtm } from "@/components/CaptureUtm";
 import { JsonLd } from "@/components/JsonLd";
-import { schoolJsonLd } from "@/lib/seo";
+import { organizationJsonLd } from "@/lib/seo";
 import { img } from "@/content/assets";
 import { hasImage } from "@/components/Img";
 
@@ -13,7 +15,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <a href="#main" className="sr-only z-50 rounded bg-navy px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
         Skip to content
       </a>
-      <JsonLd data={schoolJsonLd()} />
+      <JsonLd data={organizationJsonLd()} />
+      <Suspense fallback={null}>
+        <CaptureUtm />
+      </Suspense>
       <Header logoSrc={hasImage(img.logo) ? img.logo : undefined} />
       <main id="main" className="flex-1">{children}</main>
       <Footer />

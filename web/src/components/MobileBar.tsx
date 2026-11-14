@@ -1,14 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { CalendarCheck, MessageCircle, Phone, PenLine } from "lucide-react";
 import { site } from "@/content/site";
+import { brandOf, navFor } from "@/content/brands";
 
 // Sticky action bar on phones: the four things parents do most.
 export function MobileBar() {
+  const { primary, secondary } = navFor(brandOf(usePathname()));
   const items = [
     site.phone && { label: "Call", href: `tel:${site.phone.replace(/\s/g, "")}`, icon: Phone, external: true },
     site.whatsapp && { label: "WhatsApp", href: `https://wa.me/${site.whatsapp}`, icon: MessageCircle, external: true },
-    { label: "Visit", href: "/admissions/visit/", icon: CalendarCheck },
-    { label: "Enquire", href: "/admissions/enquire/", icon: PenLine },
+    { label: primary.label === "Book a visit" ? "Visit" : primary.label, href: primary.href, icon: CalendarCheck },
+    { label: secondary.label, href: secondary.href, icon: PenLine },
   ].filter(Boolean) as { label: string; href: string; icon: typeof Phone; external?: boolean }[];
 
   return (

@@ -1,3 +1,5 @@
+import type { Brand } from "@/content/brands";
+
 // The ULL mark, redrawn from the logo. When the school logo file is in /public/assets it is used instead.
 export function Mark({ className = "h-10 w-10" }: { className?: string }) {
   return (
@@ -17,7 +19,8 @@ export function Mark({ className = "h-10 w-10" }: { className?: string }) {
   );
 }
 
-export function Logo({ light = false, src }: { light?: boolean; src?: string }) {
+// The wordmark follows the brand of the page: ULL INDIA on group pages, ULL AUREMONT, ULL GLOBAL.
+export function Logo({ light = false, src, word = "AUREMONT", accent = "orange" }: { light?: boolean; src?: string; word?: string; accent?: "orange" | "teal" | "navy" }) {
   if (src && !light) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt="ULL Auremont School" width={1536} height={1024} className="h-12 w-auto sm:h-16" />;
@@ -27,7 +30,7 @@ export function Logo({ light = false, src }: { light?: boolean; src?: string }) 
       <Mark className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" />
       <span className="leading-none">
         <span className={`block font-sans text-[19px] font-bold tracking-tight sm:text-[22px] ${light ? "text-white" : "text-navy"}`}>
-          ULL <span className={light ? "text-gold" : "text-orange"}>AUREMONT</span>
+          ULL <span className={light ? "text-gold" : accentText[accent]}>{word}</span>
         </span>
         <span className={`mt-1.5 block text-[10px] font-semibold uppercase tracking-[0.22em] ${light ? "text-white/65" : "text-muted"}`}>
           United Learning League
@@ -35,4 +38,12 @@ export function Logo({ light = false, src }: { light?: boolean; src?: string }) 
       </span>
     </span>
   );
+}
+
+const accentText = { orange: "text-orange", teal: "text-teal-700", navy: "text-navy" };
+
+/** The logo for a page's brand. Only Auremont has a logo file today; the others use the wordmark. */
+export function BrandLogo({ brand, light, src }: { brand: Brand | null; light?: boolean; src?: string }) {
+  if (!brand) return <Logo light={light} word="INDIA" accent="navy" />;
+  return <Logo light={light} src={brand.slug === "auremont" ? src : undefined} word={brand.short} accent={brand.accent === "teal" ? "teal" : "orange"} />;
 }

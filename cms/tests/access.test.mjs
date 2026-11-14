@@ -53,15 +53,70 @@ check('counsellor cannot make themselves admin', !me.json?.user?.roles?.includes
 const ownName = await api('PATCH', `/users/${users.counsellor.id}`, { token: users.counsellor.token, body: { name: 'Renamed counsellor' } })
 check('staff can update their own profile', ok(ownName), ownName.status)
 
-// --- Website form (public) ---
-const pub = await api('POST', '/enquiries', { body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, stage: 'enrolled', notes: [{ note: 'injected' }] } })
-check('website visit request is accepted', ok(pub), pub.status)
+// --- Website form (public). OTP is required; staff still record walk-ins directly. ---
+const anon = await api('POST', '/enquiries', { body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, stage: 'enrolled', notes: [{ note: 'injected' }], pageUrl: '/reimagining-education/?utm_source=parking&utm_content=parking_gate_1', utmSource: 'parking', utmMedium: 'qr', utmCampaign: 'auremont_202611_reimagining', utmContent: 'parking_gate_1', utmTerm: 'nagarbhavi' } })
+check('website form without OTP is rejected', anon.status === 401, anon.status)
+const pub = await api('POST', '/enquiries', { token: admin, body: { type: 'visit', parentName: 'Test Parent', phone: '+91 98450 00000', childName: 'Test Child', grade: 'Grade 3', consent: true, pageUrl: '/reimagining-education/?utm_source=parking&utm_content=parking_gate_1', utmSource: 'parking', utmMedium: 'qr', utmCampaign: 'auremont_202611_reimagining', utmContent: 'parking_gate_1', utmTerm: 'nagarbhavi' } })
+check('staff can still record a visit', ok(pub), pub.status)
 const pubId = pub.json?.doc?.id
 const pubDoc = (await api('GET', `/enquiries/${pubId}`, { token: admin })).json
-check('website cannot set stage or notes', pubDoc?.stage === 'visitBooked' && !(pubDoc?.notes?.length), `${pubDoc?.stage}, notes ${pubDoc?.notes?.length}`)
+check('staff visit keeps the campaign link', pubDoc?.utmSource === 'parking' && pubDoc?.utmContent === 'parking_gate_1' && pubDoc?.utmCampaign === 'auremont_202611_reimagining', JSON.stringify({ utmSource: pubDoc?.utmSource, utmContent: pubDoc?.utmContent }))
 check('visit gets a pass code', Boolean(pubDoc?.visit?.passCode))
 const anonRead = await api('GET', '/enquiries')
 check('public cannot read enquiries', !ok(anonRead) || !anonRead.json?.docs?.length, anonRead.status)
+
+const expectationAnswers = {
+  priority: ['Quality of education', 'Safety and security'],
+  learningEnvironment: ['Play-based learning', 'Balanced learning approach'],
+  teachers: ['Experienced teachers'],
+  skills: ['English communication', 'Confidence', 'Leadership'],
+  concern: ['Difficulty adjusting', 'Safety concerns'],
+  longTerm: ['Strong academic foundation', 'Preparation for future grades'],
+}
+const expectationBody = {
+  parentName: 'Expectation Parent',
+  phone: '+91 98450 11111',
+  email: 'parent@example.com',
+  childName: 'Asha',
+  grade: 'Grade 2',
+  consent: true,
+  pageUrl: '/parent-expectations/?utm_source=parking',
+  utmSource: 'parking',
+  ...expectationAnswers,
+}
+const pe = await api('POST', '/parent-expectations', { body: expectationBody })
+check('website parent expectations form is accepted', ok(pe), `${pe.status} ${JSON.stringify(pe.json?.errors ?? pe.json?.message ?? '')}`)
+const peId = pe.json?.doc?.id
+const peDoc = (await api('GET', `/parent-expectations/${peId}`, { token: admin })).json
+check('answers are stored as arrays of the selected options', Array.isArray(peDoc?.priority) && peDoc.priority.includes('Quality of education') && peDoc.priority.includes('Safety and security') && Array.isArray(peDoc?.skills) && peDoc.skills.length === 3 && Array.isArray(peDoc?.longTerm) && peDoc.longTerm.includes('Preparation for future grades'), JSON.stringify({ priority: peDoc?.priority, skills: peDoc?.skills, longTerm: peDoc?.longTerm }))
+check('parent expectations keep the campaign link and normalise the mobile', peDoc?.utmSource === 'parking' && peDoc?.phone === '+919845011111' && peDoc?.grade === 'Grade 2', JSON.stringify({ utmSource: peDoc?.utmSource, phone: peDoc?.phone, grade: peDoc?.grade }))
+const peAnon = await api('GET', '/parent-expectations')
+check('public cannot read parent expectations', !ok(peAnon) || !peAnon.json?.docs?.length, peAnon.status)
+const peBad = await api('POST', '/parent-expectations', { body: { ...expectationBody, parentName: 'No concern', phone: '9845011112', concern: [] } })
+check('parent expectations require an option per question', !ok(peBad), peBad.status)
+const pePhone = await api('POST', '/parent-expectations', { body: { ...expectationBody, parentName: 'Bad phone', phone: '12345' } })
+check('parent expectations reject an invalid mobile', !ok(pePhone), pePhone.status)
+const peBot = await api('POST', '/parent-expectations', { body: { ...expectationBody, parentName: 'Bot', phone: '9845011113', website: 'https://spam.example' } })
+check('parent expectations honeypot is rejected', !ok(peBot), peBot.status)
+const peEditor = await api('GET', '/parent-expectations?limit=1', { token: users.editor.token })
+check('editor cannot read parent expectations', !ok(peEditor) || !peEditor.json?.docs?.length, peEditor.status)
+const peCounsellor = await api('GET', `/parent-expectations/${peId}`, { token: users.counsellor.token })
+check('counsellor can read parent expectations', ok(peCounsellor) && peCounsellor.json?.parentName === 'Expectation Parent', peCounsellor.status)
+const peDesk = await api('GET', `/parent-expectations/${peId}`, { token: users.frontDesk.token })
+check('front desk can read parent expectations', ok(peDesk), peDesk.status)
+const peBlock = await api('POST', '/pages?draft=true', {
+  token: admin,
+  body: {
+    title: 'Parent expectations block check',
+    slug: `pe-block-${stamp}`,
+    description: 'Temporary page used to check the parent expectations block.',
+    hero: { heading: 'Parent Expectation Form' },
+    _status: 'draft',
+    blocks: [{ blockType: 'parentExpectations', heading: 'Parent Expectation Form', lead: 'Test lead' }],
+  },
+})
+check('pages accept the parent expectations block', ok(peBlock) && peBlock.json?.doc?.blocks?.some((block) => block.blockType === 'parentExpectations'), `${peBlock.status} ${JSON.stringify(peBlock.json?.errors ?? '')}`)
+if (peBlock.json?.doc?.id) await api('DELETE', `/pages/${peBlock.json.doc.id}`, { token: admin })
 
 // --- Matrix: what each role may do ---
 const can = {
@@ -102,6 +157,8 @@ for (const [role, [c, r, u, d, p, s]] of Object.entries(can)) {
 
 // --- Clean up ---
 await api('DELETE', `/enquiries/${pubId}`, { token: admin })
+if (peId) await api('DELETE', `/parent-expectations/${peId}`, { token: admin })
+await api('DELETE', `/parent-expectations?where[parentName][like]=No concern`, { token: admin })
 await api('DELETE', `/enquiries?where[parentName][like]=Walk-in by`, { token: admin })
 for (const role of roles) if (users[role].id) await api('DELETE', `/users/${users[role].id}`, { token: admin })
 

@@ -2,6 +2,9 @@
 // "Pages" collection, so content can move from these files into the CMS unchanged.
 // Images are paths under /public (e.g. "/assets/nursery-space.png") or CMS media URLs.
 
+// "interest" is the waitlist for a school that has not opened yet (ULL Global).
+export type EnquiryMode = "enquiry" | "visit" | "interest";
+
 export type Accent = "navy" | "orange" | "teal" | "gold";
 export type Tone = "white" | "cream" | "navy" | "teal" | "gold" | "orange";
 export type Link = { label: string; href: string };
@@ -20,7 +23,8 @@ export type Block =
   | { type: "cta"; heading: string; text?: string; primary?: Link; secondary?: Link; image?: string }
   | ({ type: "subnav"; items: Card[] } & Head)
   | ({ type: "gallery"; items: GalleryItem[]; note?: string } & Head)
-  | { type: "enquiry"; heading?: string; lead?: string; mode?: "enquiry" | "visit" };
+  | { type: "enquiry"; heading?: string; lead?: string; mode?: EnquiryMode }
+  | { type: "parentExpectations"; heading?: string; lead?: string };
 
 export type Page = {
   slug: string; // "" for home, "academics/foundational" etc.

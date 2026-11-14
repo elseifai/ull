@@ -21,6 +21,8 @@ export const isStaff: Access = ({ req }) => Boolean(req.user)
 export const canEditContent: Access = ({ req }) => hasRole(req.user as UserLike, 'schoolAdmin', 'editor')
 export const canWorkAdmissions: Access = ({ req }) =>
   hasRole(req.user as UserLike, 'schoolAdmin', 'counsellor', 'frontDesk')
+// Applicant documents, recordings and reports: counsellors and school admins, not the front desk.
+export const canReadPrivateFiles: Access = ({ req }) => hasRole(req.user as UserLike, 'schoolAdmin', 'counsellor')
 // Hide admin sections a role cannot change, so each person's dashboard shows only their own work.
 export const hideUnless =
   (...roles: Role[]) =>

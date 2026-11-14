@@ -7,20 +7,31 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { MAX_PRIVATE_UPLOAD, PrivateFiles } from './collections/PrivateFiles'
 import { Pages } from './collections/Pages'
 import { Enquiries } from './collections/Enquiries'
+import { ParentExpectations } from './collections/ParentExpectations'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
+import { leadOtpEndpoints } from './endpoints/lead-otp'
+import { env } from './lib/env'
+import { storagePlugins } from './lib/storage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 // Origins allowed to call the API from a browser (the public site and local dev).
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4100').replace(/\/$/, '')
-const origins = [process.env.NEXT_PUBLIC_SITE_URL, 'http://localhost:3000', 'http://localhost:4100'].filter(Boolean) as string[]
+const siteUrl = (env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:4100').replace(/\/$/, '')
+const origins = [
+  ...new Set(
+    [siteUrl, env('PAYLOAD_PUBLIC_SERVER_URL'), ...(env('CORS_ORIGINS') || '').split(','), 'http://localhost:3000', 'http://localhost:4100']
+      .map((origin) => origin?.trim())
+      .filter((origin): origin is string => Boolean(origin)),
+  ),
+]
 
 export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
+  serverURL: env('PAYLOAD_PUBLIC_SERVER_URL') || siteUrl,
   admin: {
     user: Users.slug,
     meta: { titleSuffix: ' · ULL Admissions Desk' },
@@ -36,15 +47,19 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Enquiries, Pages, Media, Users],
+  collections: [Enquiries, ParentExpectations, Pages, Media, PrivateFiles, Users],
   globals: [SiteSettings],
+  endpoints: leadOtpEndpoints,
   cors: origins,
   csrf: origins,
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: env('PAYLOAD_SECRET') || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   // Migrations run automatically when the production server starts.
-  db: postgresAdapter({ pool: { connectionString: process.env.DATABASE_URL || '' }, prodMigrations: migrations }),
+  db: postgresAdapter({ pool: { connectionString: env('DATABASE_URL') || '' }, prodMigrations: migrations }),
   sharp,
-  plugins: [],
+  // Larger uploads are refused before they are read into memory. Media allows 10 MB (see Media.ts);
+  // private files allow more for counselling recordings.
+  upload: { limits: { fileSize: MAX_PRIVATE_UPLOAD } },
+  plugins: storagePlugins(),
 })
