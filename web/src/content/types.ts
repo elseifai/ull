@@ -23,7 +23,8 @@ export type Block =
   | { type: "cta"; heading: string; text?: string; primary?: Link; secondary?: Link; image?: string }
   | ({ type: "subnav"; items: Card[] } & Head)
   | ({ type: "gallery"; items: GalleryItem[]; note?: string } & Head)
-  | { type: "enquiry"; heading?: string; lead?: string; mode?: EnquiryMode };
+  | { type: "enquiry"; heading?: string; lead?: string; mode?: EnquiryMode }
+  | { type: "parentExpectations"; heading?: string; lead?: string };
 
 export type Page = {
   slug: string; // "" for home, "academics/foundational" etc.

@@ -81,6 +81,27 @@ export const morePages: Page[] = [
     blocks: [{ type: "enquiry", mode: "enquiry" }],
   },
   {
+    slug: "parent-expectations",
+    title: "Parent Expectation Form",
+    description:
+      "Share your expectations for your child’s schooling at ULL Auremont in Nagarbhavi, Bengaluru: priorities, learning, teachers, skills and long-term hopes.",
+    breadcrumb: [{ label: "Admissions", href: "/auremont/admissions/" }],
+    hero: {
+      image: img.parent,
+      eyebrow: "Admissions",
+      heading: "Parent Expectation Form",
+      lead: "Tell us what you want school to do for your child. It takes a few minutes, and our admissions team reads every answer.",
+      accent: "orange",
+    },
+    blocks: [
+      {
+        type: "parentExpectations",
+        heading: "",
+        lead: "Choose every option that fits. Each question needs at least one answer.",
+      },
+    ],
+  },
+  {
     slug: "auremont/bengaluru/nagarbhavi/facilities",
     title: "Campus and facilities, Nagarbhavi",
     description:
@@ -231,7 +252,7 @@ export const morePages: Page[] = [
         // DRAFT: to be reviewed by the school before launch.
         type: "text",
         body: [
-          "We collect the details you share with us through enquiry, visit and application forms (such as your name, phone number, email address and your child’s details) only to respond to you and to process admissions.",
+          "We collect the details you share with us through enquiry, visit, parent expectation and application forms (such as your name, phone number, email address, your child’s details and the options you select) only to respond to you and to process admissions.",
           "We do not sell your data. We share it only with service providers who help us run admissions, such as our email, SMS and WhatsApp providers, and only for that purpose.",
           "You can ask us to see, correct or delete your data at any time by contacting the school office.",
           "This policy follows the Digital Personal Data Protection Act, 2023.",

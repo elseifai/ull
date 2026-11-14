@@ -57,6 +57,7 @@ const names: Record<string, string> = {
   gallery: 'Photo gallery',
   cta: 'Call to action',
   enquiry: 'Enquiry or visit form',
+  parentExpectations: 'Parent Expectation Form',
 }
 const withThumbnail = (b: Block): Block => ({
   ...b,
@@ -108,6 +109,14 @@ const blockList: Block[] = [
     slug: 'enquiry',
     labels: { singular: 'Enquiry form', plural: 'Enquiry forms' },
     fields: [{ name: 'heading', type: 'text' }, { name: 'lead', type: 'textarea' }, { name: 'mode', type: 'select', options: ['enquiry', 'visit', 'interest'], defaultValue: 'enquiry', admin: { description: 'Interest = waitlist for a school that has not opened yet' } }],
+  },
+  {
+    slug: 'parentExpectations',
+    labels: { singular: 'Parent Expectation Form', plural: 'Parent Expectation Forms' },
+    fields: [
+      { name: 'heading', type: 'text', defaultValue: 'Parent Expectation Form' },
+      { name: 'lead', type: 'textarea', admin: { description: 'Shown above the form. The questions themselves are fixed.' } },
+    ],
   },
 ]
 
