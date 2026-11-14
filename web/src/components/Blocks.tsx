@@ -4,6 +4,7 @@ import type { Accent, Block, Card, Tone } from "@/content/types";
 import { img } from "@/content/assets";
 import { BrandName } from "./BrandName";
 import { EnquiryForm } from "./EnquiryForm";
+import { ParentExpectationsForm } from "./ParentExpectationsForm";
 import { Img } from "./Img";
 import { site } from "@/content/site";
 
@@ -308,6 +309,28 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
           </div>
         </Section>
       );
+    case "parentExpectations": {
+      const heading = block.heading === undefined ? "Parent Expectation Form" : block.heading.trim();
+      const lead = block.lead?.trim();
+      return (
+        <Section tone="cream">
+          <div id="parent-expectations" className="mx-auto w-full max-w-3xl scroll-mt-28 [overflow-anchor:none]">
+            {(heading || lead) && (
+              <div className="mb-8 sm:mb-10">
+                {heading && (
+                  <>
+                    <Eyebrow>Admissions</Eyebrow>
+                    <h2 className="h2 mt-4">{heading}</h2>
+                  </>
+                )}
+                {lead && <p className={`text-muted ${heading ? "mt-5" : "text-lg"}`}>{lead}</p>}
+              </div>
+            )}
+            <ParentExpectationsForm />
+          </div>
+        </Section>
+      );
+    }
   }
 }
 

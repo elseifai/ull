@@ -143,6 +143,7 @@ const auremontNav: NavItem[] = [
       { label: "How to join", href: "/auremont/admissions/" },
       { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
       { label: "Enquire", href: "/auremont/admissions/enquire/" },
+      { label: "Parent expectations", href: "/parent-expectations/" },
       { label: "Questions parents ask", href: "/auremont/admissions/#faq" },
     ],
   },
@@ -166,6 +167,7 @@ const groupNav: NavItem[] = [
     ],
   },
   { label: "Admissions", href: "/auremont/admissions/" },
+  { label: "Parent expectations", href: "/parent-expectations/" },
   { label: "Parent portal", href: "/portal/" },
   { label: "Contact", href: "/contact/" },
 ];

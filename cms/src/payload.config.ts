@@ -10,6 +10,7 @@ import { Media } from './collections/Media'
 import { MAX_PRIVATE_UPLOAD, PrivateFiles } from './collections/PrivateFiles'
 import { Pages } from './collections/Pages'
 import { Enquiries } from './collections/Enquiries'
+import { ParentExpectations } from './collections/ParentExpectations'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
 import { env } from './lib/env'
@@ -45,7 +46,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Enquiries, Pages, Media, PrivateFiles, Users],
+  collections: [Enquiries, ParentExpectations, Pages, Media, PrivateFiles, Users],
   globals: [SiteSettings],
   cors: origins,
   csrf: origins,

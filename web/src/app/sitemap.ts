@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: pageUrl(p.slug),
         lastModified: now,
         changeFrequency: "monthly" as const,
-        priority: p.slug.includes("/admissions") ? 0.9 : p.slug.split("/").length > 2 ? 0.6 : 0.8,
+        priority: p.slug.includes("/admissions") || p.slug === "parent-expectations" ? 0.9 : p.slug.split("/").length > 2 ? 0.6 : 0.8,
       })),
   ];
 }

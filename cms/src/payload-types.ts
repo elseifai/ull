@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     enquiries: Enquiry;
+    'parent-expectations': ParentExpectation;
     pages: Page;
     media: Media;
     'private-files': PrivateFile;
@@ -80,6 +81,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    'parent-expectations': ParentExpectationsSelect<false> | ParentExpectationsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'private-files': PrivateFilesSelect<false> | PrivateFilesSelect<true>;
@@ -235,6 +237,75 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parent-expectations".
+ */
+export interface ParentExpectation {
+  id: number;
+  parentName: string;
+  phone: string;
+  email?: string | null;
+  childName?: string | null;
+  grade?:
+    | (
+        | 'Nursery'
+        | 'LKG'
+        | 'UKG'
+        | 'Grade 1'
+        | 'Grade 2'
+        | 'Grade 3'
+        | 'Grade 4'
+        | 'Grade 5'
+        | 'Grade 6'
+        | 'Grade 7'
+        | 'Grade 8'
+        | 'Grade 9'
+        | 'Grade 10'
+      )
+    | null;
+  priority: (
+    | 'Quality of education'
+    | 'Communication skills'
+    | 'Overall personality development'
+    | 'Sports and extracurricular activities'
+    | 'Safety and security'
+    | 'Discipline and values'
+  )[];
+  learningEnvironment: (
+    'Play-based learning' | 'Activity-based learning' | 'Academic-focused learning' | 'Balanced learning approach'
+  )[];
+  teachers: (
+    'Experienced teachers' | 'Individual attention' | 'Friendly and caring teachers' | 'Regular parent communication'
+  )[];
+  skills: ('English communication' | 'Confidence' | 'Creativity' | 'Social skills' | 'Leadership')[];
+  concern: (
+    | 'Difficulty adjusting'
+    | 'Lack of individual attention'
+    | 'Academic pressure'
+    | 'Safety concerns'
+    | 'Communication development'
+  )[];
+  longTerm: (
+    | 'Strong academic foundation'
+    | 'Confidence and independence'
+    | 'Good communication skills'
+    | 'Well-rounded personality'
+    | 'Preparation for future grades'
+  )[];
+  consent?: boolean | null;
+  /**
+   * Page they submitted from, including the query string.
+   */
+  pageUrl?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -489,6 +560,16 @@ export interface Page {
             blockName?: string | null;
             blockType: 'enquiry';
           }
+        | {
+            heading?: string | null;
+            /**
+             * Shown above the form. The questions themselves are fixed.
+             */
+            lead?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'parentExpectations';
+          }
       )[]
     | null;
   updatedAt: string;
@@ -630,6 +711,10 @@ export interface PayloadLockedDocument {
         value: number | Enquiry;
       } | null)
     | ({
+        relationTo: 'parent-expectations';
+        value: number | ParentExpectation;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: number | Page;
       } | null)
@@ -731,6 +816,32 @@ export interface EnquiriesSelect<T extends boolean = true> {
         checkedOutAt?: T;
         visitors?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parent-expectations_select".
+ */
+export interface ParentExpectationsSelect<T extends boolean = true> {
+  parentName?: T;
+  phone?: T;
+  email?: T;
+  childName?: T;
+  grade?: T;
+  priority?: T;
+  learningEnvironment?: T;
+  teachers?: T;
+  skills?: T;
+  concern?: T;
+  longTerm?: T;
+  consent?: T;
+  pageUrl?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  utmContent?: T;
+  utmTerm?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -960,6 +1071,14 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               lead?: T;
               mode?: T;
+              id?: T;
+              blockName?: T;
+            };
+        parentExpectations?:
+          | T
+          | {
+              heading?: T;
+              lead?: T;
               id?: T;
               blockName?: T;
             };

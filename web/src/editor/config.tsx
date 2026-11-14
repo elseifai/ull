@@ -166,13 +166,19 @@ export const components: Record<string, ComponentConfig<Props>> = {
     { heading: text("Heading"), lead: area("Introduction"), mode: { type: "radio", label: "Form", options: [{ label: "Enquiry", value: "enquiry" }, { label: "Visit booking", value: "visit" }, { label: "Register interest (not yet open)", value: "interest" }] } },
     { heading: "Tell us about your child", lead: "Our admissions team will call you within one working day.", mode: "enquiry" },
   ),
+  parentExpectations: block(
+    "parentExpectations",
+    "Parent Expectation Form",
+    { heading: text("Heading"), lead: area("Introduction") },
+    { heading: "Parent Expectation Form", lead: "Tell us what matters most for your child. Choose every option that fits." },
+  ),
 };
 
 export const config: Config = {
   categories: {
     text: { title: "Text", components: ["text", "steps", "table", "faq", "quote"] },
     cards: { title: "Cards and photos", components: ["cards", "subnav", "gallery"] },
-    actions: { title: "Actions", components: ["cta", "enquiry"] },
+    actions: { title: "Actions", components: ["cta", "enquiry", "parentExpectations"] },
   },
   components,
   root: {
