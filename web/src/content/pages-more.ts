@@ -18,7 +18,7 @@ export const faqs = [
 
 export const morePages: Page[] = [
   {
-    slug: "admissions",
+    slug: "auremont/admissions",
     title: "Admissions: Nursery to Grade 10",
     description:
       "Admissions are open at ULL Auremont, a CBSE school in Nagarbhavi, Bengaluru, for Nursery to Grade 10. Enquire, visit the campus and join in five simple steps.",
@@ -29,8 +29,8 @@ export const morePages: Page[] = [
       lead: "The best way to understand ULL Auremont is to see it. Visit, meet our teachers and watch learning in action.",
       accent: "orange",
       actions: [
-        { label: "Book a campus visit", href: "/admissions/visit/" },
-        { label: "Enquire now", href: "/admissions/enquire/" },
+        { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
+        { label: "Enquire now", href: "/auremont/admissions/enquire/" },
       ],
     },
     blocks: [
@@ -51,11 +51,11 @@ export const morePages: Page[] = [
     ],
   },
   {
-    slug: "admissions/visit",
+    slug: "auremont/admissions/visit",
     title: "Book a campus visit",
     description:
       "Book a visit to ULL Auremont in Nagarbhavi, Bengaluru. See classrooms, meet our teachers and watch learning in action, any working day by appointment.",
-    breadcrumb: [{ label: "Admissions", href: "/admissions/" }],
+    breadcrumb: [{ label: "Admissions", href: "/auremont/admissions/" }],
     hero: {
       image: img.arrival,
       eyebrow: "Visit us",
@@ -66,11 +66,11 @@ export const morePages: Page[] = [
     blocks: [{ type: "enquiry", mode: "visit" }],
   },
   {
-    slug: "admissions/enquire",
+    slug: "auremont/admissions/enquire",
     title: "Admissions enquiry",
     description:
       "Send an admissions enquiry to ULL Auremont, a CBSE school for Nursery to Grade 10 in Nagarbhavi, Bengaluru. Our team will call you back.",
-    breadcrumb: [{ label: "Admissions", href: "/admissions/" }],
+    breadcrumb: [{ label: "Admissions", href: "/auremont/admissions/" }],
     hero: {
       image: img.admissionsForm,
       eyebrow: "Enquire",
@@ -81,10 +81,14 @@ export const morePages: Page[] = [
     blocks: [{ type: "enquiry", mode: "enquiry" }],
   },
   {
-    slug: "campus",
-    title: "Campus and facilities",
+    slug: "auremont/bengaluru/nagarbhavi/facilities",
+    title: "Campus and facilities, Nagarbhavi",
     description:
       "The ULL Auremont campus in Nagarbhavi, Bengaluru: classrooms, the Aurora Lab, computer and robotics lab, library, sports, arts studios and safety.",
+    breadcrumb: [
+      { label: "Bengaluru", href: "/auremont/bengaluru/" },
+      { label: "Nagarbhavi", href: "/auremont/bengaluru/nagarbhavi/" },
+    ],
     hero: {
       image: img.arrival,
       eyebrow: "Campus",
@@ -123,10 +127,10 @@ export const morePages: Page[] = [
         columns: 3,
         items: [
           { title: "Classrooms", accent: "navy", text: "Bright, child-sized spaces with reading corners." },
-          { title: "Aurora Lab", accent: "gold", text: "A hands-on science lab where ideas dawn.", href: "/student-life/aurora-lab/" },
+          { title: "Aurora Lab", accent: "gold", text: "A hands-on science lab where ideas dawn.", href: "/auremont/student-life/aurora-lab/" },
           { title: "Computer and robotics lab", accent: "teal", text: "Coding, programmable boards and creative media." },
           { title: "Library and reading corners", accent: "orange", text: "A culture of reading in every subject." },
-          { title: "Sports", accent: "teal", text: "Courts and play spaces for every child.", href: "/student-life/sports/" },
+          { title: "Sports", accent: "teal", text: "Courts and play spaces for every child.", href: "/auremont/student-life/sports/" },
           { title: "Art, music and dance rooms", accent: "gold", text: "Visual arts, music, dance and theatre as full subjects." },
           { title: "Infirmary", accent: "navy", text: "Care on hand through the school day." },
           { title: "Safety and security", accent: "orange", text: "Managed visitor entry and a safe, supervised campus." },
@@ -136,12 +140,12 @@ export const morePages: Page[] = [
       {
         type: "cta",
         heading: "The best tour is in person",
-        primary: { label: "Book a campus visit", href: "/admissions/visit/" },
+        primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
       },
     ],
   },
   {
-    slug: "parents",
+    slug: "auremont/parents",
     title: "For parents",
     description:
       "How ULL Auremont partners with parents: monthly Pulse notes, Kushala practice cards, Term Showcases, fitness report cards and parent–teacher meetings.",
@@ -213,7 +217,7 @@ export const morePages: Page[] = [
       heading: "One account for every application",
       lead: "Register once with your mobile number, add your children, apply, upload documents and follow progress. The portal opens with the next admissions cycle.",
       accent: "teal",
-      actions: [{ label: "Enquire now", href: "/admissions/enquire/" }],
+      actions: [{ label: "Enquire now", href: "/auremont/admissions/enquire/" }],
     },
     blocks: [],
   },

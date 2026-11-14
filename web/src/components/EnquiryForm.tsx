@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { site } from "@/content/site";
+import { brandOf, brands } from "@/content/brands";
+import type { EnquiryMode } from "@/content/types";
 import { LeadSubmitError, submitLead } from "@/lib/submit-lead";
 import { campaignForEnquiry } from "@/lib/utm";
 
@@ -15,9 +18,12 @@ type Status = "idle" | "sending" | "done" | "error";
 const field = "mt-2 block min-h-12 w-full rounded-[3px] border border-navy/15 bg-white px-4 text-base text-navy placeholder:text-muted/60 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal/30";
 const label = "block text-sm font-medium text-navy";
 
-export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }) {
+export function EnquiryForm({ mode = "enquiry" }: { mode?: EnquiryMode }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const pathname = usePathname();
+  // Group pages (home, contact) enquire for Auremont, the only school with a campus today.
+  const school = (brandOf(pathname) ?? brands.auremont).name;
   const today = new Date().toISOString().slice(0, 10);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,7 +39,7 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
         {
           ...data,
           ...campaignForEnquiry(),
-          type: mode,
+          type: mode === "visit" ? "visit" : "enquiry",
           consent: data.consent === "on",
           pageUrl: `${window.location.pathname}${window.location.search}`,
         },
@@ -55,7 +61,9 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
         <p className="mt-2 text-muted">
           {mode === "visit"
             ? "We’ll confirm your visit on WhatsApp and email shortly."
-            : "Our admissions team will call you back soon."}
+            : mode === "interest"
+              ? `You’re on the ${school} waitlist. We’ll write to you as soon as there is news.`
+              : "Our admissions team will call you back soon."}
         </p>
       </div>
     );
@@ -91,12 +99,12 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
           <label htmlFor="currentSchool" className={label}>Current school <span className="font-normal text-muted">(optional)</span></label>
           <input id="currentSchool" name="currentSchool" className={field} />
         </div>
-        <div>
+        {mode !== "interest" && <div>
           <label htmlFor="preferredDate" className={label}>
             Preferred visit date {mode === "enquiry" && <span className="font-normal text-muted">(optional)</span>}
           </label>
           <input id="preferredDate" name="preferredDate" type="date" min={today} required={mode === "visit"} className={field} />
-        </div>
+        </div>}
         <div>
           <label htmlFor="priority" className={label}>What matters most to you?</label>
           <select id="priority" name="priority" defaultValue="" className={field}>
@@ -122,7 +130,7 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
         </div>
         <label className="flex gap-3 text-sm text-muted sm:col-span-2">
           <input type="checkbox" name="consent" required className="mt-0.5 h-5 w-5 shrink-0 accent-navy" />
-          <span>I agree to be contacted by ULL Auremont by phone, WhatsApp, SMS and email about admissions. See our <a href="/privacy/" className="underline">privacy policy</a>.</span>
+          <span>I agree to be contacted by {school} by phone, WhatsApp, SMS and email about admissions. See our <a href="/privacy/" className="underline">privacy policy</a>.</span>
         </label>
       </div>
 
@@ -139,7 +147,7 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: "enquiry" | "visit" }
 
       <button type="submit" disabled={status === "sending"} className="btn-accent mt-6 w-full sm:w-auto">
         {status === "sending" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-        {mode === "visit" ? "Request my visit" : "Send enquiry"}
+        {mode === "visit" ? "Request my visit" : mode === "interest" ? "Register interest" : "Send enquiry"}
       </button>
     </form>
   );

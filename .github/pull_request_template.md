@@ -35,4 +35,4 @@ Do not reopen these in this pull request.
 - [ ] The in-house CRM is the CMS admin panel at `/admin` in this repo (#200 closed).
 - [ ] The third-party CRM is Orggen. Its API document has not arrived (#150 and #153 stay blocked).
 - [ ] ULL Global is the IB school. Auremont, not Ormond, is the Nagarbhavi CBSE school.
-- [ ] Mac plans and other local work belong in PR #202 into `dev`, which closes #197. They are not part of this pull request unless this is #202.
+- [ ] Mac plans and `docs/handover/` are already on `dev` (PR #202 merged, #197 done). Do not treat that task as still open.

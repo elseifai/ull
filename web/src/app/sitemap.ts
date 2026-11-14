@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { pages } from "@/content";
+import { ownRoutes, pages } from "@/content";
 import { pageUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -7,14 +7,14 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
-    { url: pageUrl(""), lastModified: now, changeFrequency: "weekly", priority: 1 },
+    ...ownRoutes.map((slug) => ({ url: pageUrl(slug), lastModified: now, changeFrequency: "weekly" as const, priority: slug.split("/").length < 3 ? 1 : 0.9 })),
     ...pages
-      .filter((p) => p.slug !== "portal")
+      .filter((p) => p.slug !== "portal" && !ownRoutes.includes(p.slug))
       .map((p) => ({
         url: pageUrl(p.slug),
         lastModified: now,
         changeFrequency: "monthly" as const,
-        priority: p.slug.startsWith("admissions") ? 0.9 : p.slug.includes("/") ? 0.6 : 0.8,
+        priority: p.slug.includes("/admissions") ? 0.9 : p.slug.split("/").length > 2 ? 0.6 : 0.8,
       })),
   ];
 }

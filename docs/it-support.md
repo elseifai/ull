@@ -218,7 +218,7 @@ Enquiry creation labels a page URL that starts with `/global` as ULL Global and 
 - The in-house CRM code is this repo's CMS admin at `/admin` (the Admissions & Visitor Desk). [#200](https://github.com/elseifai/ull/issues/200) is closed. Do not look for a second CRM repository.
 - The third-party CRM is Orggen. Its API document has not arrived. [#150](https://github.com/elseifai/ull/issues/150) and [#153](https://github.com/elseifai/ull/issues/153) stay open and blocked. Epic [#148](https://github.com/elseifai/ull/issues/148) still has "Zoho CRM" in the GitHub title; that is not a second choice.
 - ULL Global is the IB school. Auremont, not Ormond, is the Nagarbhavi CBSE school.
-- The Mac checkout's local work, including the updated plans, is committed in [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, which closes [#197](https://github.com/elseifai/ull/issues/197). That pull request was still open on 14 Nov 2026, and #197 was still open with it. This branch does not contain those plan files.
+- [#197](https://github.com/elseifai/ull/issues/197) is done. [PR #202](https://github.com/elseifai/ull/pull/202) merged into `dev` and added the updated Cursor plans plus `docs/handover/`. GitHub still shows the issue open, because that pull request merged into `dev` and not into the default branch `main`.
 
 ## Runbooks
 
@@ -315,4 +315,5 @@ Restore a media or private object from S3 versioning only when you have the vers
 | 2026-11-03 | Deploys build published CMS pages; enquiries store UTM fields; Google tag injected on exported HTML; production deploy role and instance wiring fixes. | `ac80a15` through `77ad1e5` |
 | 2026-11-11 | Public enquiry and visit forms require a verified MSG91 OTP. The CMS loads the MSG91 JSON secret on start and will not replace a good `.env` when that secret is invalid. | `#2`, `#3` |
 | 2026-11-13 | Added this guide, `docs/business-ops.md`, `docs/ullindia-agent-summary.md`, the PR template, and `CONTRIBUTING.md`. No application or infrastructure code changed. | this PR |
-| 2026-11-14 | Release flow is `dev` (test), then `uat` (operations review), then `prod` (live). No Jira. In-house CRM is `/admin`. Third-party CRM is Orggen; its API document has not arrived. ULL Global is the IB school; Auremont is the Nagarbhavi CBSE spelling. Mac plans are in PR #202, which closes #197. | Vaibhav, 14 Nov 2026; issues #198 and #200 closed; #150, #153, and #197 still open; PR #202 |
+| 2026-11-14 | Release flow is `dev` (test), then `uat` (operations review), then `prod` (live). No Jira. In-house CRM is `/admin`. Third-party CRM is Orggen; its API document has not arrived. ULL Global is the IB school; Auremont is the Nagarbhavi CBSE spelling. | Vaibhav, 14 Nov 2026; issues #198 and #200 closed; #150 and #153 still open |
+| 2026-11-14 | PR #202 merged into `dev`. Updated plans and `docs/handover/` are in the repo. #197 is done. | `590a84d`; GitHub issue #197 still open because the merge was not into `main` |

@@ -37,7 +37,7 @@ URL: `ullindia.com/portal/student` (login from plan 09). Under 13, the parent op
 | **Subjects** | Per subject: curriculum units for the year (from the CBSE syllabus / IB unit planner), unit status (upcoming, in progress, done), resources, quizzes, Q&A, marks |
 | **Progress** | Term reports, competency progress, trend charts, teacher comments, Holistic Progress Card view |
 | **Portfolio (digital footprint)** | Projects, artwork, robotics builds, presentations, certificates, sports results, clubs, competitions, reflections; photos and files |
-| **Tests and reports** | Psychometric tests from `ullindia.aptitudetest.in` with status and report PDFs (plan 20) |
+| **Tests and reports** | Assessments from the vendor test platform: catalog per grade, Start/Continue, report PDFs and score summary (plan 20) |
 | **Wellbeing** | Mood check-in (optional, 13+), counsellor booking, Kushala programme |
 
 ## Metric framework (suggested)
@@ -92,7 +92,7 @@ Rules: show growth against the student's own past, not class rank. No public lea
 | Quizzes, Q&A | Built in this portal (simple MCQ + short answer), or from the LMS if there is one |
 | Observations, participation, competency ratings | Teacher quick-entry screen (mobile-friendly, 30 seconds per entry) |
 | Sports | Coaches enter results |
-| Psychometric | aptitudetest.in webhook + API (plan 20) |
+| Psychometric | Assessment platform result webhook (plan 20) |
 | Portfolio | Student / teacher uploads to the private documents bucket (plan 02) |
 
 ## Data model (new collections)

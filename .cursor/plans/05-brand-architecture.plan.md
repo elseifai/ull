@@ -9,8 +9,8 @@ todos:
     content: Add Brands and Campuses collections in Payload; relate Pages, Media, Enquiries and Users to them
     status: pending
   - id: url-map
-    content: Adopt /auremont and /global paths with subdomain redirects
-    status: pending
+    content: Adopt /auremont and /global paths with subdomain redirects (paths, umbrella home, campus page and 301s done; subdomain redirects wait for DNS)
+    status: in_progress
   - id: user-scoping
     content: Scope School admin, counsellor and front desk users to one or more campuses
     status: pending
@@ -64,7 +64,9 @@ Final URL map:
 ullindia.com/                         ULL India group home
 ullindia.com/about, /leadership, /careers, /news, /contact
 ullindia.com/auremont/                ULL Auremont brand home
-ullindia.com/auremont/nagarbhavi/     campus page (address, map, transport, fees, visit)
+ullindia.com/auremont/bengaluru/                  Auremont campuses in the city (like Orchids /bangalore-branches)
+ullindia.com/auremont/bengaluru/nagarbhavi/       campus page (address, directions, enquiry, facilities, grades, admissions, FAQs)
+ullindia.com/auremont/bengaluru/nagarbhavi/facilities/
 ullindia.com/auremont/academics/...   brand-level content
 ullindia.com/auremont/admissions/
 ullindia.com/global/                  ULL Global brand home
@@ -75,7 +77,9 @@ auremont.ullindia.com  → 301 → ullindia.com/auremont/
 global.ullindia.com    → 301 → ullindia.com/global/
 ```
 
-The current site is built at the root (e.g. `/academics/foundational`). Move it under `/auremont/` with 301 redirects from the old paths (redirects managed in CMS, plan 07).
+Campus paths are `/<brand>/<city>/<locality>/`, following Orchids (`/bangalore-branches/nagarbhavi`) and Ryan (`/ryaninternational/cbse/bangalore/<school>`), which both put the city in the path. The board is not in the path because each brand has one board.
+
+**Done (28 Oct 2026):** the Auremont pages moved under `/auremont/`; `/` is the ULL India umbrella home; `deploy/cloudfront-function.js` 301s the old paths (keeping UTM/gclid); CMS migration `20261028_120000_umbrella_paths` renames stored slugs and links. Brand, campus and navigation data live in `web/src/content/brands.ts` until the Brands and Campuses collections exist. A group `/about/` page would replace the `/about/` → `/auremont/about/` redirect.
 
 ## CMS and data changes
 
@@ -115,5 +119,5 @@ Site settings move from one global to per-brand values: header CTA labels, phone
 ## Open questions
 
 1. Is ULL Global's first campus planned (city, year)? Is IB candidacy started?
-2. Should Auremont's campus page be `/auremont/nagarbhavi` now, even with one campus? (Recommended: yes, so a second campus needs no URL changes.)
+2. ~~Should Auremont's campus page be `/auremont/nagarbhavi` now?~~ Decided: `/auremont/bengaluru/nagarbhavi/`.
 3. Final logo files (SVG) for each lockup.

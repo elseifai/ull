@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Plus } from "lucide-react";
 import type { Accent, Block, Card, Tone } from "@/content/types";
 import { img } from "@/content/assets";
+import { BrandName } from "./BrandName";
 import { EnquiryForm } from "./EnquiryForm";
 import { Img } from "./Img";
 import { site } from "@/content/site";
@@ -244,7 +245,7 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
             </div>
             <div className="split-text flex items-center py-14 lg:py-20">
               <div>
-                <Eyebrow light>{site.name}</Eyebrow>
+                <Eyebrow light><BrandName /></Eyebrow>
                 <h2 className="h2 mt-4 text-white">{block.heading}</h2>
                 {block.text && <p className="mt-5 text-lg text-white/75">{block.text}</p>}
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -279,13 +280,16 @@ export function BlockView({ block, index = 0 }: { block: Block; index?: number }
     case "enquiry":
       return (
         <Section tone="cream">
-          <div className="grid gap-12 lg:grid-cols-12">
+          <div id={block.mode === "visit" ? "visit" : "enquire"} className="grid scroll-mt-28 gap-12 lg:grid-cols-12">
             <div className="lg:col-span-4">
-              <Eyebrow>{block.mode === "visit" ? "Book a visit" : "Admissions"}</Eyebrow>
+              <Eyebrow>{block.mode === "visit" ? "Book a visit" : block.mode === "interest" ? "Register interest" : "Admissions"}</Eyebrow>
               <h2 className="h2 mt-4">{block.heading ?? (block.mode === "visit" ? "Choose a day to visit" : "Tell us about your child")}</h2>
               {block.lead && <p className="mt-5 text-muted">{block.lead}</p>}
               <ol className="mt-8 space-y-5 border-t border-navy/15 pt-6">
-                {["We call or WhatsApp you to confirm", "You visit, meet our teachers and see classrooms", "A relaxed interaction with your child"].map((t, i) => (
+                {(block.mode === "interest"
+                  ? ["You join the waitlist for your child’s grade", "We share news first: campus, curriculum and fees", "You get the first invitations to visit and apply"]
+                  : ["We call or WhatsApp you to confirm", "You visit, meet our teachers and see classrooms", "A relaxed interaction with your child"]
+                ).map((t, i) => (
                   <li key={t} className="flex gap-4">
                     <span className="font-serif text-2xl font-semibold leading-none text-orange">{i + 1}</span>
                     <span className="text-ink/85">{t}</span>

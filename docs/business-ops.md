@@ -72,7 +72,7 @@ A change to these documents stops after `dev`. It is not sent to the trial site 
 
 ## Roadmap
 
-Twenty-four epics, the issues titled `[Epic]`, from [#4](https://github.com/elseifai/ull/issues/4) to [#192](https://github.com/elseifai/ull/issues/192). The names in the table are the GitHub titles. Progress is how many of that epic's tasks were closed on 2026-11-14. The only closed issues in the repository are #198 and #200, both tasks under epic 24, so that epic is 2 of 8 closed. Every other epic still has none of its tasks closed. "Backlog" means the epic also has the backlog label.
+Twenty-four epics, the issues titled `[Epic]`, from [#4](https://github.com/elseifai/ull/issues/4) to [#192](https://github.com/elseifai/ull/issues/192). The names in the table are the GitHub titles. Progress was checked on 14 Nov 2026 after [PR #202](https://github.com/elseifai/ull/pull/202) merged. GitHub has two closed issues, #198 and #200. #197 is done as well: the updated plans and the handover documents are in the project. GitHub has not closed that ticket yet, because the pull request merged into `dev` rather than `main`. Epic 24 is therefore 3 of 8 done. Every other epic still has none of its tasks closed. "Backlog" means the epic also has the backlog label.
 
 | Epic | Issue | Phase | Progress |
 |---|---|---|---|
@@ -99,7 +99,7 @@ Twenty-four epics, the issues titled `[Epic]`, from [#4](https://github.com/else
 | 21 Audio recorder devices and AI success metrics per persona | [#168](https://github.com/elseifai/ull/issues/168) | P2 Operate · backlog | 0 of 6 closed |
 | 22 Sarvam AI voice agents (outbound and common inbound with human handover) | [#26](https://github.com/elseifai/ull/issues/26) | P3 Automate · backlog | 0 of 7 closed |
 | 23 Microsoft 365, subscriptions, security, onboarding, HR, compliance and hiring | [#182](https://github.com/elseifai/ull/issues/182) | P1 Launch | 0 of 9 closed |
-| 24 Delivery workflow: living docs, ops feedback loop and content intake | [#192](https://github.com/elseifai/ull/issues/192) | Unscheduled · backlog | 2 of 8 closed |
+| 24 Delivery workflow: living docs, ops feedback loop and content intake | [#192](https://github.com/elseifai/ull/issues/192) | Unscheduled · backlog | 3 of 8 done |
 
 Phase names are the GitHub milestones. Epic 24 has no milestone. The milestone windows on GitHub are: P0 Foundation, 26 Oct–13 Nov 2026; P1 Launch, 9 Nov–18 Dec 2026; P2 Operate, 4 Jan–26 Feb 2027; P3 Automate, 1 Feb–26 Mar 2027; P4 Learn, 1 Feb–30 Apr 2027.
 
@@ -113,7 +113,7 @@ The board those issues should sit on is the GitHub Project **ULL India Roadmap**
 | The in-house admissions system is the staff desk at `/admin` in this project. | [#200](https://github.com/elseifai/ull/issues/200), closed |
 | The outside admissions system we will connect to is Orggen. Its API document has not arrived, so the connection is not started. | [#150](https://github.com/elseifai/ull/issues/150) and [#153](https://github.com/elseifai/ull/issues/153), still blocked |
 | ULL Global is the IB school. Auremont is the spelling of the Nagarbhavi CBSE school, not Ormond. | This guide |
-| The updated plans from the office computer are in [pull request #202](https://github.com/elseifai/ull/pull/202), into `dev`, which closes [#197](https://github.com/elseifai/ull/issues/197). That review was still open on 14 Nov 2026. | [#197](https://github.com/elseifai/ull/issues/197), still open |
+| The updated plans from the office computer, and the handover documents, are in the project. | [#197](https://github.com/elseifai/ull/issues/197), done ([PR #202](https://github.com/elseifai/ull/pull/202) merged) |
 
 ## Decisions still waiting
 
@@ -135,3 +135,4 @@ These three issues are open and labelled blocked.
 | 2026-11-11 | A family must confirm their mobile number before an enquiry or visit request is accepted. Staff can still type in a walk-in themselves. |
 | 2026-11-13 | This guide, the technical guide, and the assistant brief were added. No change to the website or the admissions desk. |
 | 2026-11-14 | A change is tested on `dev`, reviewed by operations on the trial site, and only then put on the live site. Requests stay in GitHub; there is no Jira. The staff desk is the in-house admissions system. The outside system is Orggen, and its document has not arrived. The IB school is ULL Global. The Nagarbhavi CBSE school is spelled Auremont. |
+| 2026-11-14 | The updated plans and handover documents from the office computer are now in the project. That task is done. |

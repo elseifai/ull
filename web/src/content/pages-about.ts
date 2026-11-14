@@ -3,7 +3,7 @@ import type { Page } from "./types";
 
 export const aboutPages: Page[] = [
   {
-    slug: "about",
+    slug: "auremont/about",
     title: "About ULL Auremont",
     description:
       "ULL Auremont is a CBSE school in Nagarbhavi, Bengaluru, for Nursery to Grade 10. Discover our name, motto, vision, mission and the Auremont Way.",
@@ -65,26 +65,26 @@ export const aboutPages: Page[] = [
         type: "subnav",
         heading: "Explore more",
         items: [
-          { title: "What makes us unique", image: img.passage, accent: "orange", href: "/about/why-auremont/", text: "Nine things that are planned, connected and visible to parents." },
-          { title: "Our teachers", image: img.counselling, accent: "teal", href: "/about/teachers/", text: "Teachers who plan. Children who think." },
-          { title: "Our approach to learning", image: img.primary, accent: "gold", href: "/academics/", text: "The Auremont Learning Cycle, in every lesson." },
+          { title: "What makes us unique", image: img.passage, accent: "orange", href: "/auremont/about/why-auremont/", text: "Nine things that are planned, connected and visible to parents." },
+          { title: "Our teachers", image: img.counselling, accent: "teal", href: "/auremont/about/teachers/", text: "Teachers who plan. Children who think." },
+          { title: "Our approach to learning", image: img.primary, accent: "gold", href: "/auremont/academics/", text: "The Auremont Learning Cycle, in every lesson." },
         ],
       },
       {
         type: "cta",
         heading: "Ready to see it for yourself?",
         text: "Visit the campus, meet our teachers and watch learning in action.",
-        primary: { label: "Book a campus visit", href: "/admissions/visit/" },
-        secondary: { label: "Enquire now", href: "/admissions/enquire/" },
+        primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
+        secondary: { label: "Enquire now", href: "/auremont/admissions/enquire/" },
       },
     ],
   },
   {
-    slug: "about/why-auremont",
+    slug: "auremont/about/why-auremont",
     title: "What makes ULL Auremont unique",
     description:
       "Planned lessons, Indian roots in every subject, sport as a pillar, a skill and a hobby every week, a life skill every month, and learning you can see.",
-    breadcrumb: [{ label: "About", href: "/about/" }],
+    breadcrumb: [{ label: "About", href: "/auremont/about/" }],
     hero: {
       image: img.passage,
       eyebrow: "About us",
@@ -97,30 +97,30 @@ export const aboutPages: Page[] = [
         type: "cards",
         columns: 3,
         items: [
-          { title: "Every lesson is planned", accent: "navy", text: "Teachers follow written lesson plans built on the Auremont Learning Cycle, aligned to the National Curriculum Framework and reviewed before they are taught.", href: "/academics/" },
+          { title: "Every lesson is planned", accent: "navy", text: "Teachers follow written lesson plans built on the Auremont Learning Cycle, aligned to the National Curriculum Framework and reviewed before they are taught.", href: "/auremont/academics/" },
           { title: "Indian roots in every subject", accent: "orange", text: "Not a separate period: Indian thinkers, Karnataka examples, Kannada and values are part of everyday lessons." },
-          { title: "Sport is a pillar, not a period", accent: "teal", text: "Every child plays, is assessed for fitness and competes for their house; talented children train for school teams.", href: "/student-life/sports/" },
-          { title: "A skill every week", accent: "gold", text: "Pulse, our activity calendar, builds one named skill every week, linked to what the class is studying.", href: "/student-life/pulse/" },
-          { title: "A hobby every week", accent: "orange", text: "Ruchi lets children from Grade 1 to Grade 8 discover and build an interest, from Kathak to kitchen gardening to robotics.", href: "/student-life/ruchi/" },
-          { title: "A life skill every month", accent: "teal", text: "Kushala builds independence, practised at school and at home.", href: "/student-life/kushala/" },
-          { title: "Hands-on science and technology", accent: "navy", text: "The Aurora Lab, robotics and a computing curriculum reviewed every year.", href: "/student-life/aurora-lab/" },
-          { title: "Aiming high", accent: "gold", text: "The Summit Pathway builds the foundations for olympiads, competitive exams and leadership from Grade 6.", href: "/student-life/summit-pathway/" },
-          { title: "You see the learning", accent: "orange", text: "Monthly Pulse notes, a Term Showcase every term and a Strengths Profile that follows your child from class to class.", href: "/parents/" },
+          { title: "Sport is a pillar, not a period", accent: "teal", text: "Every child plays, is assessed for fitness and competes for their house; talented children train for school teams.", href: "/auremont/student-life/sports/" },
+          { title: "A skill every week", accent: "gold", text: "Pulse, our activity calendar, builds one named skill every week, linked to what the class is studying.", href: "/auremont/student-life/pulse/" },
+          { title: "A hobby every week", accent: "orange", text: "Ruchi lets children from Grade 1 to Grade 8 discover and build an interest, from Kathak to kitchen gardening to robotics.", href: "/auremont/student-life/ruchi/" },
+          { title: "A life skill every month", accent: "teal", text: "Kushala builds independence, practised at school and at home.", href: "/auremont/student-life/kushala/" },
+          { title: "Hands-on science and technology", accent: "navy", text: "The Aurora Lab, robotics and a computing curriculum reviewed every year.", href: "/auremont/student-life/aurora-lab/" },
+          { title: "Aiming high", accent: "gold", text: "The Summit Pathway builds the foundations for olympiads, competitive exams and leadership from Grade 6.", href: "/auremont/student-life/summit-pathway/" },
+          { title: "You see the learning", accent: "orange", text: "Monthly Pulse notes, a Term Showcase every term and a Strengths Profile that follows your child from class to class.", href: "/auremont/parents/" },
         ],
       },
       {
         type: "cta",
         heading: "See the difference on a campus visit",
-        primary: { label: "Book a campus visit", href: "/admissions/visit/" },
+        primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
       },
     ],
   },
   {
-    slug: "about/teachers",
+    slug: "auremont/about/teachers",
     title: "Our teachers",
     description:
       "How ULL Auremont trains, coaches and supports its teachers, and how we keep teaching quality consistent across every classroom.",
-    breadcrumb: [{ label: "About", href: "/about/" }],
+    breadcrumb: [{ label: "About", href: "/auremont/about/" }],
     hero: {
       image: img.counselling,
       eyebrow: "About us",

@@ -24,7 +24,7 @@ Full technical picture: `docs/it-support.md`. Business picture: `docs/business-o
 - The in-house CRM code is the CMS admin panel at `/admin` in this repo. [#200](https://github.com/elseifai/ull/issues/200) is closed. Do not look for a separate CRM repo.
 - The third-party CRM is Orggen. Its API document has not arrived. [#150](https://github.com/elseifai/ull/issues/150) and [#153](https://github.com/elseifai/ull/issues/153) stay blocked.
 - ULL Global is the IB school. Auremont is the correct spelling of the Nagarbhavi CBSE school. Never write Ormond.
-- The Mac's local work, including the updated plans, is committed in [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, which closes [#197](https://github.com/elseifai/ull/issues/197). On 14 Nov 2026 that pull request and #197 were still open. Do not treat those plan files as present on this branch.
+- [#197](https://github.com/elseifai/ull/issues/197) is done. [PR #202](https://github.com/elseifai/ull/pull/202) merged into `dev` with the updated plans and `docs/handover/`. GitHub still shows the issue open because the merge was into `dev`, not the default branch `main`.
 - Content team never publishes directly. Validate phones, emails, addresses, fees, and names first. Contact and lead data goes to the admissions desk. Page copy and media go in as a CMS draft. Anything unclear goes to the WhatsApp group `353 ULL CRM`. The CMS does not enforce this yet ([#195](https://github.com/elseifai/ull/issues/195), [#196](https://github.com/elseifai/ull/issues/196)).
 - Do not invent roadmap status. Read `gh issue list` and the epic sub-issues. Do not write secret values into docs or commits.
 
@@ -48,7 +48,7 @@ ULL India Roadmap (GitHub Project). Link pending.
 
 ## Open items
 
-All 24 epics are open. On 2026-11-14 the only closed issues are [#198](https://github.com/elseifai/ull/issues/198) and [#200](https://github.com/elseifai/ull/issues/200), so epic 24 is 2 of 8 tasks closed and every other epic is still 0 closed. The table is in `docs/business-ops.md`.
+All 24 epics are open. On 2026-11-14 the only issues GitHub has closed are [#198](https://github.com/elseifai/ull/issues/198) and [#200](https://github.com/elseifai/ull/issues/200). [#197](https://github.com/elseifai/ull/issues/197) is done as well (PR #202 merged), so epic 24 is 3 of 8 done. Every other epic is still 0 closed. The table is in `docs/business-ops.md`.
 
 Decided on 14 Nov 2026:
 
@@ -56,13 +56,12 @@ Decided on 14 Nov 2026:
 - In-house CRM is `/admin` in this repo.
 - Third-party CRM is Orggen. API document not received.
 - ULL Global = IB school. Auremont = Nagarbhavi CBSE school. Not Ormond.
-- Mac plans and other local work: [PR #202](https://github.com/elseifai/ull/pull/202) into `dev`, closes #197 when merged. Not merged on this date.
+- Mac plans and handover docs are on `dev`. #197 is done (PR #202 merged). GitHub has not closed the ticket.
 
 Still blocked:
 
 - [#88](https://github.com/elseifai/ull/issues/88) — Entra ID app and role groups, blocked on the Microsoft 365 purchase (epic 23).
 - [#150](https://github.com/elseifai/ull/issues/150) — Orggen API endpoint, auth, payload, and sandbox. The API document has not arrived.
 - [#153](https://github.com/elseifai/ull/issues/153) — Orggen adapter, blocked on that same missing document.
-- [#197](https://github.com/elseifai/ull/issues/197) — still open until PR #202 merges.
 
 Also open, and easy to get wrong: parent login is a holding page, not a portal; the `editor` role can publish even though the content rule says the content team must not; a CMS publish rebuilds the site only after `ull/<stage>/deploy-hook-token` is a GitHub token whose value starts with `ghp_` or `github_pat_`; do not open pull requests against `main`.
