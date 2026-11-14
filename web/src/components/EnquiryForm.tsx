@@ -6,6 +6,7 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { site } from "@/content/site";
 import { brandOf, brands } from "@/content/brands";
 import type { EnquiryMode } from "@/content/types";
+import { LeadSubmitError, submitLead } from "@/lib/submit-lead";
 import { campaignForEnquiry } from "@/lib/utm";
 
 export const grades = ["Nursery", "LKG", "UKG", ...Array.from({ length: 10 }, (_, i) => `Grade ${i + 1}`)];
@@ -19,8 +20,10 @@ const label = "block text-sm font-medium text-navy";
 
 export function EnquiryForm({ mode = "enquiry" }: { mode?: EnquiryMode }) {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const pathname = usePathname();
   // Group pages (home, contact) enquire for Auremont, the only school with a campus today.
-  const school = (brandOf(usePathname()) ?? brands.auremont).name;
+  const school = (brandOf(pathname) ?? brands.auremont).name;
   const today = new Date().toISOString().slice(0, 10);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -30,23 +33,23 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: EnquiryMode }) {
     if (data.website) return; // honeypot: bots fill hidden fields
     delete data.website;
     setStatus("sending");
+    setErrorMessage(null);
     try {
-      const res = await fetch(`${site.apiUrl}/enquiries`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await submitLead(
+        {
           ...data,
           ...campaignForEnquiry(),
           type: mode === "visit" ? "visit" : "enquiry",
           consent: data.consent === "on",
           pageUrl: `${window.location.pathname}${window.location.search}`,
-        }),
-      });
-      if (!res.ok) throw new Error(String(res.status));
+        },
+        { apiUrl: site.apiUrl },
+      );
       setStatus("done");
       form.reset();
-    } catch {
+    } catch (err) {
       setStatus("error");
+      setErrorMessage(err instanceof LeadSubmitError ? err.message : null);
     }
   }
 
@@ -133,8 +136,12 @@ export function EnquiryForm({ mode = "enquiry" }: { mode?: EnquiryMode }) {
 
       {status === "error" && (
         <p role="alert" className="mt-5 bg-orange-50 p-4 text-sm text-orange-700">
-          Sorry, we couldn’t send that just now. Please try again
-          {site.phone ? <> or call us on <a className="underline" href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a></> : null}.
+          {errorMessage ?? (
+            <>
+              Sorry, we couldn’t send that just now. Please try again
+              {site.phone ? <> or call us on <a className="underline" href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a></> : null}.
+            </>
+          )}
         </p>
       )}
 

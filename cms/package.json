@@ -15,6 +15,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "node tests/access.test.mjs",
+    "test:otp": "tsx --test tests/otp-gate.test.ts tests/lead-form.test.ts",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed.ts"
   },
   "dependencies": {
