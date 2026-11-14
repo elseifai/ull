@@ -107,7 +107,7 @@ const blockList: Block[] = [
   {
     slug: 'enquiry',
     labels: { singular: 'Enquiry form', plural: 'Enquiry forms' },
-    fields: [{ name: 'heading', type: 'text' }, { name: 'lead', type: 'textarea' }, { name: 'mode', type: 'select', options: ['enquiry', 'visit'], defaultValue: 'enquiry' }],
+    fields: [{ name: 'heading', type: 'text' }, { name: 'lead', type: 'textarea' }, { name: 'mode', type: 'select', options: ['enquiry', 'visit', 'interest'], defaultValue: 'enquiry', admin: { description: 'Interest = waitlist for a school that has not opened yet' } }],
   },
 ]
 

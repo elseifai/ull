@@ -1,0 +1,22 @@
+# CMS and Postgres on one EC2 instance. Uploads go to S3; this file does not store them.
+name: ull
+services:
+  cms:
+    image: ${CMS_IMAGE}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://ull:${POSTGRES_PASSWORD}@db:5432/ull_cms
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ull
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ull_cms
+    volumes:
+      - /opt/ull/pgdata:/var/lib/postgresql/data

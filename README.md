@@ -50,5 +50,9 @@ CMS_URL=http://localhost:3000 npm run build   # static site from published CMS p
 2. **EC2 (CMS + API)**: a t3.small in ap-south-1 with Docker. Copy the repo, fill `cms/.env`, then `cd deploy && POSTGRES_PASSWORD=... docker compose up -d --build`. Add it to CloudFront as a second origin with behaviours for `/api/*` and `/admin*` (no caching, all headers/cookies forwarded).
 3. **Publish the site**: `S3_BUCKET=... CLOUDFRONT_ID=... CMS_URL=https://ullindia.com deploy/deploy-web.sh`. Wire the same command to `DEPLOY_HOOK_URL` (for example a GitHub Actions `workflow_dispatch`) so CMS publishing updates the site.
 4. **Backups**: schedule `deploy/backup-db.sh` nightly.
+   **Media backfill** (once per stage, after the first release with the image pipeline):
+   `CMS_URL=https://uat.ullindia.com ADMIN_EMAIL=... ADMIN_PASSWORD=... node deploy/backfill-media.mjs` lists files
+   that are not on the CDN or are missing sizes; add `--apply` to fix them (`MEDIA_DIR` points at a copy of any
+   pre-S3 `cms/media` folder), then rebuild the site.
 5. **Messaging**: verify the SES sender domain, create Gupshup and WATI templates (`enquiry_received`, `visit_requested`, `visit_confirmed`, `visitor_arrived`) and add the keys to `cms/.env`.
 6. **Google**: add the site to Search Console and submit `https://ullindia.com/sitemap.xml`; create the Google Business Profile.

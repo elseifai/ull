@@ -163,7 +163,7 @@ export const components: Record<string, ComponentConfig<Props>> = {
   enquiry: block(
     "enquiry",
     "Enquiry or visit form",
-    { heading: text("Heading"), lead: area("Introduction"), mode: { type: "radio", label: "Form", options: [{ label: "Enquiry", value: "enquiry" }, { label: "Visit booking", value: "visit" }] } },
+    { heading: text("Heading"), lead: area("Introduction"), mode: { type: "radio", label: "Form", options: [{ label: "Enquiry", value: "enquiry" }, { label: "Visit booking", value: "visit" }, { label: "Register interest (not yet open)", value: "interest" }] } },
     { heading: "Tell us about your child", lead: "Our admissions team will call you within one working day.", mode: "enquiry" },
   ),
 };

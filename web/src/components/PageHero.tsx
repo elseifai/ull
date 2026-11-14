@@ -2,9 +2,11 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Page } from "@/content/types";
 import { Img } from "./Img";
+import { trail } from "@/lib/seo";
 
 export function PageHero({ page }: { page: Page }) {
-  const { hero, breadcrumb } = page;
+  const { hero } = page;
+  const breadcrumb = trail(page);
   return (
     <section className="relative overflow-hidden bg-cream">
       <div className="grid lg:min-h-[34rem] lg:grid-cols-2">
@@ -13,7 +15,7 @@ export function PageHero({ page }: { page: Page }) {
             <nav aria-label="Breadcrumb" className="mb-8">
               <ol className="flex flex-wrap items-center gap-1.5 text-[13px] text-muted">
                 <li><Link href="/" className="hover:text-navy">Home</Link></li>
-                {breadcrumb?.map((b) => (
+                {breadcrumb.map((b) => (
                   <li key={b.href} className="flex items-center gap-1.5">
                     <ChevronRight className="h-3.5 w-3.5" aria-hidden />
                     <Link href={b.href} className="hover:text-navy">{b.label}</Link>
@@ -36,7 +38,7 @@ export function PageHero({ page }: { page: Page }) {
           </div>
         </div>
         <div className="relative aspect-[16/11] lg:aspect-auto">
-          <Img src={hero.image} accent={hero.accent} priority />
+          <Img src={hero.image} accent={hero.accent} sizes="(min-width: 1024px) 50vw, 100vw" priority />
         </div>
       </div>
     </section>

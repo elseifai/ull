@@ -2,10 +2,14 @@ import { aboutPages } from "./pages-about";
 import { academicsPages } from "./pages-academics";
 import { lifePages } from "./pages-life";
 import { morePages } from "./pages-more";
+import { groupPages } from "./pages-group";
 import cms from "./cms.json";
 import type { Page } from "./types";
 
-const local: Page[] = [...aboutPages, ...academicsPages, ...lifePages, ...morePages];
+const local: Page[] = [...groupPages, ...aboutPages, ...academicsPages, ...lifePages, ...morePages];
+
+// Paths with their own page file in app/(site); the catch-all route skips these slugs.
+export const ownRoutes = ["", "auremont", "auremont/bengaluru/nagarbhavi"];
 
 // Pages published in the CMS win; local files fill in anything not yet in the CMS.
 const fromCms = (cms.pages ?? []) as unknown as Page[];
