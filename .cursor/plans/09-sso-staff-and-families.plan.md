@@ -1,9 +1,9 @@
 ---
 name: 09 SSO for admins (Microsoft Entra ID) and for parents and students
-overview: Staff sign in to /admin with their Microsoft work account through Entra ID (OIDC), with Entra groups mapped to CRM roles. Parents and students sign in to their dashboards with phone OTP, plus Google sign-in, and the same identity is handed to ullindia.aptitudetest.in. Staff 2 – 20 Nov 2026; families 4 – 29 Jan 2027.
+overview: Staff sign in to /admin with their Microsoft work account through Entra ID (OIDC), with Entra groups mapped to CRM roles. Parents and students sign in to their dashboards with phone OTP, plus Google sign-in, and the same accounts start assessments on the vendor platform (plan 20). Staff 2 – 20 Nov 2026; families 4 – 29 Jan 2027.
 todos:
   - id: entra-app
-    content: Tenant admin registers an Entra ID app (redirect URIs for uat and prod) and creates security groups per role and campus
+    content: "On hold until Microsoft 365 is purchased (plan 23). Then: tenant admin registers an Entra ID app (redirect URIs for uat and prod) and creates security groups per role and campus"
     status: pending
   - id: payload-strategy
     content: Add an OIDC auth strategy to the Payload Users collection; map group claims to roles and campuses on each login
@@ -18,8 +18,8 @@ todos:
     content: Decide student login rules by age (parent-managed under 13, own login 13+)
     status: pending
   - id: aptitude-sso
-    content: Implement the identity handoff to ullindia.aptitudetest.in per their integration docs (plan 20)
-    status: pending
+    content: "Dropped: the assessment platform needs no SSO (plan 20 registers attempts server-side and returns a direct test link)"
+    status: cancelled
 isProject: false
 ---
 
@@ -97,12 +97,9 @@ A separate Payload auth collection `portalUsers`, so families never share a tabl
 - **Students:** under 13 the dashboard is opened through the parent's login ("Switch to Aarav's view"); 13+ get their own login, invited by the parent or the school. DPDP rules on children's data need verifiable parental consent, which the parent gives when activating the student account.
 - Sessions: 30 days for parents on trusted devices, 12 hours for students; refresh on activity.
 
-### Hand-off to `ullindia.aptitudetest.in` (plan 20)
+### Assessments (plan 20)
 
-When a student or parent clicks "Take test" or "View report", we send them to aptitudetest.in already signed in. Options, decided by their integration docs:
-1. **OIDC:** ULL acts as an identity provider (Payload issues ID tokens; needs a small OIDC provider such as `oidc-provider`).
-2. **Signed JWT launch link** (likely simplest): `https://ullindia.aptitudetest.in/sso?token=<JWT>` signed with a shared secret or our private key, 2-minute expiry, containing ULL student id, name, grade, parent email/phone.
-3. **SAML:** only if they require it.
+No identity hand-off is needed. The assessment platform takes an attempt registered by our server and returns a direct `testurl`, so families never sign in to the vendor. What this plan provides to plan 20: the signed-in parent or student, the child they act for, and recorded parental consent before a minor starts a test.
 
 ## Security checklist
 
@@ -116,10 +113,10 @@ When a student or parent clicks "Take test" or "View report", we send them to ap
 
 - A counsellor added to the Nagarbhavi counsellor group in Entra can sign in and sees only Nagarbhavi leads; removed from the group, they lose access within 24 hours.
 - A parent who enquired with their phone signs in with OTP and sees their child.
-- A student is sent to aptitudetest.in without a second login.
+- A student starts an assessment from the dashboard without signing in anywhere else (plan 20).
 
 ## Open questions
 
-1. Is ULL on Microsoft 365 (Entra ID tenant exists) and who is the tenant admin?
+1. ~~Is ULL on Microsoft 365?~~ Not yet: ULL is buying Microsoft 365 for the group (plan 23). Who will be the tenant admin?
 2. Do students get school email accounts (Google or Microsoft)?
-3. Will aptitudetest.in accept OIDC, a signed JWT, or SAML?
+3. ~~Will aptitudetest.in accept OIDC, a signed JWT, or SAML?~~ Not needed (plan 20).

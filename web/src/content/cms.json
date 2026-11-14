@@ -1,5 +1,21 @@
 {
-  "pages": null,
+  "pages": [
+    {
+      "slug": "reimagining-education",
+      "title": "Reimagining Education | ULL Auremont, Nagarbhavi Bengaluru",
+      "description": "ULL Auremont reimagines school for the AI age: inquiry-led learning, values and future skills, Nursery to Grade 10, CBSE, Nagarbhavi.",
+      "hero": {
+        "heading": "Reimagining Education for a World That Has Changed",
+        "accent": "navy"
+      },
+      "blocks": [
+        {
+          "type": "enquiry",
+          "mode": "enquiry"
+        }
+      ]
+    }
+  ],
   "settings": null,
   "media": {}
 }
