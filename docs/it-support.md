@@ -122,6 +122,8 @@ What `deploy/rollout-stage.sh` does:
 7. Invalidates the CDN distribution path `/*`. A failure of that invalidation is ignored (`|| true`).
 8. Unless `SITE_ONLY=true`: sends `deploy/docker-compose.aws.yml` and `deploy/remote-up.sh` to the instance with SSM `AWS-RunShellScript` and starts the containers. `remote-up.sh` reads the four secrets, writes `/opt/ull/.env`, installs the nightly backup cron, pulls the image, and runs `docker compose up -d`.
 
+Keep `cms/package-lock.json` and `web/package-lock.json` in sync with their `package.json` using npm 10 (`npm install --package-lock-only` on Node 22.17.0): the CMS image runs `npm ci` without copying `cms/.npmrc`, so a lockfile saved under `legacy-peer-deps` fails that Docker build.
+
 Publishing a CMS page does not deploy new code. `cms/src/lib/rebuild.ts` debounces 30 seconds and POSTs `DEPLOY_HOOK_URL`. On the instance, `remote-up.sh` sets that URL to `https://api.github.com/repos/elseifai/ull/actions/workflows/deploy.yml/dispatches` only when `ull/<stage>/deploy-hook-token` starts with `ghp_` or `github_pat_`. The body is `{"ref":"<stage>","inputs":{"stage":"<stage>","site_only":true}}`. Any other secret value leaves the hook unset, and the CMS logs a dry run. A generated placeholder in Secrets Manager does not publish the site.
 
 ### Local deploy scripts
