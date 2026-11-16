@@ -91,7 +91,7 @@ function PageList() {
       {error && <p className="ull-alert">{error}</p>}
       <form className="ull-new" action={create}>
         <input name="title" placeholder="New page title, e.g. Transport" required />
-        <input name="slug" placeholder="Web address, e.g. parents/transport" required />
+        <input name="slug" placeholder="Web address, e.g. auremont/parents/transport" required />
         <button className="ull-btn" disabled={creating}>{creating ? "Creating…" : "Create page"}</button>
       </form>
       {!pages && !error && <p className="text-muted">Loading pages…</p>}

@@ -21,6 +21,9 @@ One plan per point from the 23 Oct 2026 brief. Start with 01 (timeline).
 - [17 Success metrics for each team](17-success-metrics.plan.md)
 - [18 CRM lead source attribution (online, offline, coupons, WhatsApp)](18-crm-lead-source-attribution.plan.md)
 - [19 External CRM sync (Orggen CRM / Zoho CRM)](19-external-crm-sync.plan.md)
-- [20 ULL India on aptitudetest.in (ullindia.aptitudetest.in)](20-aptitudetest-integration.plan.md)
+- [20 Assessment platform integration (student and parent dashboards)](20-aptitudetest-integration.plan.md)
 - [21 Audio recorder devices and AI success metrics per persona](21-audio-recorder-ai-metrics.plan.md)
 - [22 Sarvam AI voice agents (outbound and common inbound with human handover)](22-sarvam-voice-agents.plan.md)
+- [23 Microsoft 365, subscriptions, security, onboarding, HR, compliance and hiring](23-it-subscriptions-m365.plan.md)
+
+Handover documents for ULL staff are in `docs/handover/` (setup guide for items 4–11, content brief for item 12).

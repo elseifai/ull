@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
-import { Logo } from "./Logo";
-import { nav, site } from "@/content/site";
+import { usePathname } from "next/navigation";
+import { BrandLogo } from "./Logo";
+import { site } from "@/content/site";
+import { brandOf, brands, campusAddress, campuses, group, navFor } from "@/content/brands";
 
 export function Footer() {
-  const a = site.address;
-  const address = [a.street, a.locality, `${a.city}${a.postalCode ? ` ${a.postalCode}` : ""}`, a.region].filter(Boolean).join(", ");
+  const brand = brandOf(usePathname());
+  const { nav, primary, secondary } = navFor(brand);
   const social = Object.entries(site.social).filter(([, url]) => url);
   const head = "text-[12px] font-semibold uppercase tracking-[0.2em] text-gold";
 
@@ -12,16 +16,16 @@ export function Footer() {
     <footer className="mt-auto bg-navy-900 pb-20 text-white lg:pb-0">
       <div className="container-x border-b border-white/10 py-14 lg:py-20">
         <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <Logo light />
-            <p className="mt-8 max-w-md font-serif text-3xl leading-snug text-white">{site.motto}</p>
-            <p className="mt-3 text-white/65">{site.tagline}</p>
+          <div className="lg:col-span-4">
+            <BrandLogo brand={brand} light />
+            <p className="mt-8 max-w-md font-serif text-3xl leading-snug text-white">{brand?.motto ?? group.tagline}</p>
+            <p className="mt-3 text-white/65">{brand ? brand.tagline : group.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/admissions/visit/" className="btn-accent">Book a campus visit</Link>
-              <Link href="/admissions/enquire/" className="btn-ghost-light">Enquire</Link>
+              <Link href={primary.href} className="btn-accent">{primary.label}</Link>
+              <Link href={secondary.href} className="btn-ghost-light">{secondary.label}</Link>
             </div>
           </div>
-          <div className="lg:col-span-3 lg:col-start-7">
+          <div className="lg:col-span-2 lg:col-start-6">
             <h2 className={head}>Explore</h2>
             <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-[15px] text-white/75 lg:grid-cols-1">
               {nav.map((n) => (
@@ -29,11 +33,23 @@ export function Footer() {
               ))}
             </ul>
           </div>
+          <div className="lg:col-span-2">
+            <h2 className={head}>Our schools</h2>
+            <ul className="mt-5 space-y-3 text-[15px] text-white/75">
+              <li><Link href="/" className="hover:text-white">{group.name}</Link></li>
+              {Object.values(brands).map((b) => (
+                <li key={b.slug}>
+                  <Link href={b.href} className="hover:text-white">{b.name}</Link>
+                  <span className="block text-[13px] text-white/50">{b.board}{b.status === "launching" ? " · launching soon" : ""}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="lg:col-span-3">
             <h2 className={head}>Visit us</h2>
             <address className="mt-5 space-y-2 text-[15px] not-italic leading-relaxed text-white/75">
-              <p className="font-semibold text-white">{site.legalName}</p>
-              <p>{address}</p>
+              <p className="font-semibold text-white"><Link href={campuses[0].href} className="hover:text-gold">{campuses[0].name}</Link></p>
+              <p>{campusAddress()}</p>
               {site.phone && <p><a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hover:text-white">{site.phone}</a></p>}
               {site.email && <p><a href={`mailto:${site.email}`} className="hover:text-white">{site.email}</a></p>}
               <p>{site.hours}</p>
@@ -49,7 +65,11 @@ export function Footer() {
         </div>
       </div>
       <div className="container-x flex flex-col gap-3 py-6 text-[13px] text-white/55 sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} {site.group} · {site.groupTagline}{site.affiliation ? ` · ${site.affiliation}` : ""}</p>
+        <p>
+          © {new Date().getFullYear()} {group.name} · {group.fullName}
+          {brand && ` · ${brand.name} is a ${group.name} school`}
+          {brand?.slug === "auremont" && site.affiliation ? ` · ${site.affiliation}` : ""}
+        </p>
         <ul className="flex gap-5">
           <li><Link href="/privacy/" className="hover:text-white">Privacy</Link></li>
           <li><Link href="/contact/" className="hover:text-white">Contact</Link></li>

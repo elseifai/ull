@@ -1,17 +1,17 @@
 import { img } from "./assets";
 import type { Page } from "./types";
 
-const bc = [{ label: "Student Life", href: "/student-life/" }];
+const bc = [{ label: "Student Life", href: "/auremont/student-life/" }];
 const cta = {
   type: "cta" as const,
   heading: "Come and see a school week in action",
-  primary: { label: "Book a campus visit", href: "/admissions/visit/" },
-  secondary: { label: "Enquire now", href: "/admissions/enquire/" },
+  primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
+  secondary: { label: "Enquire now", href: "/auremont/admissions/enquire/" },
 };
 
 export const lifePages: Page[] = [
   {
-    slug: "student-life",
+    slug: "auremont/student-life",
     title: "Student life: sport, skills and hobbies",
     description:
       "Sport for every child, a skill and a hobby every week, a life skill every month, plus the Aurora Lab, robotics and the Summit Pathway at ULL Auremont.",
@@ -26,19 +26,19 @@ export const lifePages: Page[] = [
       {
         type: "subnav",
         items: [
-          { title: "Sports & Fitness", tag: "Nursery–Grade 10", image: img.courtyard, href: "/student-life/sports/", text: "Fit body. Sharp mind. Strong character.", accent: "orange" },
-          { title: "Pulse", tag: "Weekly skills", image: img.primary, href: "/student-life/pulse/", text: "A skill every week. For every child.", accent: "teal" },
-          { title: "Ruchi", tag: "Hobby hour · Grades 1–8", image: img.dance, href: "/student-life/ruchi/", text: "Find what you love. Then get good at it.", accent: "gold" },
-          { title: "Kushala", tag: "Life skills", image: img.dining, href: "/student-life/kushala/", text: "Capable at school. Capable at home.", accent: "navy" },
-          { title: "Aurora Lab & robotics", tag: "Grades 1–8", image: img.senior, href: "/student-life/aurora-lab/", text: "Touch it. Test it. Build it. Code it.", accent: "teal" },
-          { title: "Summit Pathway", tag: "Grades 6–10", image: img.vocal, href: "/student-life/summit-pathway/", text: "Aim high.", accent: "orange" },
+          { title: "Sports & Fitness", tag: "Nursery–Grade 10", image: img.courtyard, href: "/auremont/student-life/sports/", text: "Fit body. Sharp mind. Strong character.", accent: "orange" },
+          { title: "Pulse", tag: "Weekly skills", image: img.primary, href: "/auremont/student-life/pulse/", text: "A skill every week. For every child.", accent: "teal" },
+          { title: "Ruchi", tag: "Hobby hour · Grades 1–8", image: img.dance, href: "/auremont/student-life/ruchi/", text: "Find what you love. Then get good at it.", accent: "gold" },
+          { title: "Kushala", tag: "Life skills", image: img.dining, href: "/auremont/student-life/kushala/", text: "Capable at school. Capable at home.", accent: "navy" },
+          { title: "Aurora Lab & robotics", tag: "Grades 1–8", image: img.senior, href: "/auremont/student-life/aurora-lab/", text: "Touch it. Test it. Build it. Code it.", accent: "teal" },
+          { title: "Summit Pathway", tag: "Grades 6–10", image: img.vocal, href: "/auremont/student-life/summit-pathway/", text: "Aim high.", accent: "orange" },
         ],
       },
       cta,
     ],
   },
   {
-    slug: "student-life/sports",
+    slug: "auremont/student-life/sports",
     title: "Sports & Fitness",
     description:
       "At ULL Auremont every child plays, is measured, competes for their house and can excel: athletics, football, cricket, basketball, kabaddi, yoga and more.",
@@ -110,7 +110,7 @@ export const lifePages: Page[] = [
     ],
   },
   {
-    slug: "student-life/pulse",
+    slug: "auremont/student-life/pulse",
     title: "Pulse: a skill every week",
     description:
       "Pulse is ULL Auremont’s activity calendar: one period a week, Nursery to Grade 10, building one named skill linked to the chapter being studied.",
@@ -153,7 +153,7 @@ export const lifePages: Page[] = [
     ],
   },
   {
-    slug: "student-life/ruchi",
+    slug: "auremont/student-life/ruchi",
     title: "Ruchi: hobby hour",
     description:
       "Ruchi is ULL Auremont’s weekly hobby hour for Grades 1–8: kitchen gardening, robotics, pottery, music, Bharatanatyam, Kathak, sport, chess and more.",
@@ -182,7 +182,7 @@ export const lifePages: Page[] = [
     ],
   },
   {
-    slug: "student-life/kushala",
+    slug: "auremont/student-life/kushala",
     title: "Kushala: a life skill every month",
     description:
       "Kushala builds independence with one practical life skill every month, practised at school and at home, from tying laces to budgeting and safe online payments.",
@@ -216,7 +216,7 @@ export const lifePages: Page[] = [
     ],
   },
   {
-    slug: "student-life/aurora-lab",
+    slug: "auremont/student-life/aurora-lab",
     title: "Aurora Lab, robotics and computing",
     description:
       "Hands-on science in the Aurora Lab, robotics from Grade 1 to Grade 8, and computing from Grade 1: coding, data, AI, digital safety and creative media.",
@@ -241,7 +241,7 @@ export const lifePages: Page[] = [
     ],
   },
   {
-    slug: "student-life/summit-pathway",
+    slug: "auremont/student-life/summit-pathway",
     title: "Summit Pathway: olympiads, debate and careers",
     description:
       "From Grade 6, the Summit Pathway builds reasoning, debate and olympiad skills; in Grades 9–10 it adds aptitude, career conversations and stream guidance.",

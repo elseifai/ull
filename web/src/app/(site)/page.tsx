@@ -1,186 +1,176 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { BlockView } from "@/components/Blocks";
 import { Img } from "@/components/Img";
-import { JsonLd } from "@/components/JsonLd";
-import { faqs } from "@/content/pages-more";
 import { img } from "@/content/assets";
+import { brands, campusAddress, campuses, directionsUrl, group, type Brand } from "@/content/brands";
 import { site } from "@/content/site";
-import { faqJsonLd } from "@/lib/seo";
+import { pageUrl } from "@/lib/seo";
 
-const paths = [
-  { label: "Academics", href: "/academics/" },
-  { label: "Student life", href: "/student-life/" },
-  { label: "Admissions", href: "/admissions/" },
-  { label: "Book a visit", href: "/admissions/visit/" },
-];
+export const metadata = { alternates: { canonical: pageUrl("") } };
 
-const facts = [
-  { value: "CBSE", label: "Curriculum shaped by NCF 2023" },
-  { value: "Nursery–10", label: "Every stage on one campus" },
-  { value: "11", label: "Sports for every child" },
-  { value: "5", label: "Steps in every lesson" },
-];
+// ULL India: the umbrella home for the group's schools (plan 05). Each brand card leads to its
+// own section (/auremont/, /global/); each campus to its page (/auremont/bengaluru/nagarbhavi/).
 
-export default function Home() {
+const accent = {
+  orange: { bar: "bg-orange", text: "text-orange-700", btn: "btn-accent" },
+  teal: { bar: "bg-teal", text: "text-teal-700", btn: "btn btn-primary" },
+} as const;
+
+function BrandPanel({ brand, image, points, links }: { brand: Brand; image: string; points: string[]; links: { label: string; href: string }[] }) {
+  const a = accent[brand.accent === "teal" ? "teal" : "orange"];
+  return (
+    <article className="flex flex-col bg-white shadow-sm">
+      <div className="relative aspect-[16/10]">
+        <Img src={image} accent={brand.accent} sizes="(min-width: 1024px) 50vw, 100vw" />
+        <span className={`absolute left-0 top-0 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-white ${brand.status === "live" ? "bg-navy" : "bg-teal-700"}`}>
+          {brand.status === "live" ? `Admissions open${site.admissionsYear ? ` ${site.admissionsYear}` : ""}` : "Launching soon"}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col p-6 sm:p-10">
+        <div className="flex items-center gap-3">
+          <span className={`h-[3px] w-8 ${a.bar}`} aria-hidden />
+          <span className={`text-[12px] font-semibold uppercase tracking-[0.16em] ${a.text}`}>{brand.board}{brand.grades ? ` · ${brand.grades}` : ""}</span>
+        </div>
+        <h3 className="h2 mt-4">{brand.name}</h3>
+        <p className="lead mt-4">{brand.tagline}</p>
+        <ul className="mt-6 space-y-3">
+          {points.map((p) => (
+            <li key={p} className="flex gap-4 text-ink/85">
+              <span className="mt-[0.8em] h-[2px] w-5 shrink-0 bg-gold" aria-hidden />
+              <span>{p}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto flex flex-col gap-3 pt-8 sm:flex-row">
+          {links.map((l, i) => (
+            <Link key={l.href} href={l.href} className={i === 0 ? a.btn : "btn-outline"}>{l.label}</Link>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function GroupHome() {
+  const cities = [...new Set(campuses.map((c) => c.city))];
   return (
     <>
-      <JsonLd data={faqJsonLd(faqs.slice(0, 5))} />
-
       {/* Hero */}
       <section className="bg-cream">
         <div className="grid lg:min-h-[calc(100dvh-7.5rem)] lg:grid-cols-[1.05fr_1fr]">
           <div className="split-text flex items-center py-14 sm:py-20">
             <div>
-              <p className="eyebrow"><span className="rule-gold" aria-hidden />{site.board} school · {site.address.locality}, {site.address.city}</p>
+              <p className="eyebrow"><span className="rule-gold" aria-hidden />{group.fullName} · {group.tagline}</p>
               <h1 className="display mt-6">
-                Every lesson connects. <em className="font-normal italic text-orange">Every child rises.</em>
+                One family of schools. <em className="font-normal italic text-orange">Inspiring generations.</em>
               </h1>
-              <p className="lead mt-7 max-w-xl">
-                {site.name} is a {site.board} school for children from {site.grades}. {site.tagline}
-              </p>
+              <p className="lead mt-7 max-w-xl">{group.description}</p>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Link href="/admissions/visit/" className="btn-accent">Book a campus visit</Link>
-                <Link href="/admissions/enquire/" className="btn-outline">Enquire now</Link>
+                <Link href="#schools" className="btn-accent">Explore our schools</Link>
+                <Link href={campuses[0].href} className="btn-outline">Find a campus</Link>
               </div>
             </div>
           </div>
           <figure className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto">
-            <Img src={img.jonty} accent="gold" priority />
-            <figcaption className="absolute bottom-0 left-0 bg-navy px-5 py-4 text-white sm:px-6">
-              <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">{site.ambassador.role}</span>
-              <span className="mt-1 block font-serif text-xl">{site.ambassador.name}</span>
-            </figcaption>
+            <Img src={img.courtyard} accent="gold" priority />
           </figure>
         </div>
       </section>
 
-      {/* Quick paths */}
-      <nav aria-label="Start here" className="bg-navy text-white">
-        <ul className="container-x grid grid-cols-2 lg:grid-cols-4">
-          {paths.map((p, i) => (
-            <li key={p.href} className={`border-white/15 ${i % 2 ? "border-l" : ""} ${i > 1 ? "border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""}`}>
-              <Link href={p.href} className="group flex min-h-16 items-center justify-between gap-3 px-1 py-5 font-serif text-lg sm:px-6 lg:text-xl">
-                {p.label}
-                <ArrowRight className="h-5 w-5 text-gold transition-transform group-hover:translate-x-1" aria-hidden />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Promise */}
-      <section className="section-y bg-white">
+      {/* Schools */}
+      <section id="schools" className="section-y scroll-mt-28 bg-white">
         <div className="container-x">
-          <div className="mx-auto max-w-4xl text-center">
-            <p className="eyebrow justify-center"><span className="rule-gold" aria-hidden />Our promise<span className="rule-gold" aria-hidden /></p>
-            <h2 className="h1 mt-6">{site.promise}</h2>
-            <p className="lead mx-auto mt-7 max-w-3xl">
-              At {site.name}, children learn deeply, play hard, stay rooted in India and grow ready for life. Every part of the week is planned with care, from the first lesson to the last whistle on the sports field.
-            </p>
+          <div className="mb-10 max-w-3xl lg:mb-14">
+            <p className="eyebrow"><span className="rule-gold" aria-hidden />Our schools</p>
+            <h2 className="h2 mt-4">Choose the school that fits your child</h2>
+            <p className="lead mt-5">Each ULL school has its own curriculum and character. Explore a school, then find the campus nearest you.</p>
           </div>
+          <div className="grid gap-8 lg:grid-cols-2">
+            <BrandPanel
+              brand={brands.auremont}
+              image={img.arrival}
+              points={[
+                `${brands.auremont.board} curriculum shaped by NCF 2023, ${brands.auremont.grades}`,
+                "Strong academics, Indian roots, sport for every child and learning for life",
+                `Campus in ${campuses[0].locality}, ${campuses[0].city}`,
+              ]}
+              links={[
+                { label: "Explore ULL Auremont", href: brands.auremont.href },
+                { label: `${campuses[0].locality} campus`, href: campuses[0].href },
+              ]}
+            />
+            <BrandPanel
+              brand={brands.global}
+              image={img.senior}
+              points={["Inquiry-led, globally minded learning", "Rooted in India, like every ULL school", "Campus, grades and opening date to be announced"]}
+              links={[
+                { label: "Register interest", href: "/global/#enquire" },
+                { label: "About ULL Global", href: brands.global.href },
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Campus finder, by city (like competitors' "schools in <city>" pages) */}
+      <section className="section-y bg-cream">
+        <div className="container-x">
+          <div className="mb-10 max-w-3xl">
+            <p className="eyebrow"><span className="rule-gold" aria-hidden />Find a campus</p>
+            <h2 className="h2 mt-4">ULL schools near you</h2>
+          </div>
+          {cities.map((city) => (
+            <div key={city} className="border-t-2 border-navy">
+              <h3 className="h3 py-5">{city}</h3>
+              <ul className="divide-y divide-line border-t border-line">
+                {campuses.filter((c) => c.city === city).map((c) => (
+                  <li key={c.href} className="grid gap-4 py-6 md:grid-cols-12 md:items-center">
+                    <div className="md:col-span-5">
+                      <Link href={c.href} className="font-serif text-xl font-semibold text-navy hover:text-orange-700">{c.name}</Link>
+                      <p className="mt-1 text-[15px] text-muted">{brands[c.brand].board} · {c.grades}</p>
+                    </div>
+                    <p className="flex gap-3 text-[15px] text-ink/85 md:col-span-4">
+                      <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-orange" aria-hidden />
+                      {campusAddress()}
+                    </p>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 md:col-span-3 md:justify-end">
+                      <Link href={c.href} className="link-arrow">View campus <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+                      <a href={directionsUrl()} target="_blank" rel="noopener" className="link-arrow">Directions</a>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <p className="mt-8 text-[15px] text-muted">
+            {brands.global.name}: campus to be announced. <Link href="/global/#enquire" className="link-arrow">Register interest</Link>
+          </p>
         </div>
       </section>
 
       <BlockView
         block={{
           type: "cards",
-          tone: "cream",
-          eyebrow: "Four pillars",
-          heading: "Everything we do stands on four pillars",
-          lead: "Drawn from our founders’ brief, they shape every lesson, every week and every report.",
-          columns: 4,
+          eyebrow: "For parents",
+          heading: "One ULL account for your family",
+          columns: 3,
           items: [
-            { title: "Strong academics", accent: "navy", image: img.primary, text: "Concepts understood, not memorised, and CBSE-ready from the first year to the Grade 10 board exam.", href: "/academics/" },
-            { title: "Indian roots", accent: "orange", image: img.passage, text: "Indian thinkers, Karnataka examples, Kannada and values in every subject.", href: "/academics/" },
-            { title: "Fit body, sharp mind", accent: "teal", image: img.courtyard, text: "Sport and fitness for every child, with coaching and competition for those who shine.", href: "/student-life/sports/" },
-            { title: "Learning for life", accent: "gold", image: img.music, text: "A skill every week, a hobby every week and a life skill every month.", href: "/student-life/" },
+            { title: "One parent portal", accent: "teal", text: "Register once, add your children and follow every application in one place.", href: "/portal/" },
+            { title: "Visit before you decide", accent: "orange", text: "See classrooms, meet teachers and watch learning in action, any working day by appointment.", href: "/auremont/admissions/visit/" },
+            { title: "Talk to us", accent: "gold", text: "Call, WhatsApp or write to our admissions team with any question.", href: "/contact/" },
           ],
         }}
       />
-
-      <BlockView
-        index={1}
-        block={{
-          type: "text",
-          image: img.nursery,
-          imageSide: "left",
-          eyebrow: "Academics",
-          heading: "The Auremont Learning Cycle",
-          lead: "Every lesson, in every subject and grade, follows five steps. Children think, talk and do before they write, and every lesson ends with reflection.",
-          bullets: [
-            "Connect: a question, story or puzzle sparks curiosity.",
-            "Experience: children explore hands-on, in groups.",
-            "Clarify: children explain; the teacher builds the concept.",
-            "Apply: they use it to solve something new.",
-            "Reflect: what did I learn, and what is still unclear?",
-          ],
-          link: { label: "Our approach to learning", href: "/academics/" },
-        }}
-      />
-
-      {/* Facts */}
-      <section className="bg-navy text-white">
-        <dl className="container-x grid grid-cols-2 gap-y-10 py-14 lg:grid-cols-4 lg:py-16">
-          {facts.map((f, i) => (
-            <div key={f.label} className={`pr-4 ${i ? "lg:border-l lg:border-white/15 lg:pl-8" : ""}`}>
-              <dt className="sr-only">{f.label}</dt>
-              <dd className="font-serif text-4xl font-semibold text-white sm:text-5xl">{f.value}</dd>
-              <dd className="mt-2 text-[15px] text-white/70">{f.label}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <BlockView
-        block={{
-          type: "subnav",
-          eyebrow: "Beyond the classroom",
-          heading: "A week full of discovery",
-          lead: "Skills and interests are part of the learning journey, planned every week for every child.",
-          items: [
-            { title: "Sports & Fitness", tag: "Every child plays", image: img.courtyard, accent: "orange", href: "/student-life/sports/", text: "Fitness measured and reported, house competitions and school teams." },
-            { title: "Pulse", tag: "A skill every week", image: img.primary, accent: "teal", href: "/student-life/pulse/", text: "One named skill a week, linked to the chapter being studied." },
-            { title: "Ruchi", tag: "A hobby every week", image: img.dance, accent: "gold", href: "/student-life/ruchi/", text: "From Kathak to kitchen gardening to robotics, Grades 1–8." },
-            { title: "Kushala", tag: "A life skill every month", image: img.dining, accent: "navy", href: "/student-life/kushala/", text: "Practical independence, practised at school and at home." },
-            { title: "Aurora Lab & robotics", tag: "Grades 1–8", image: img.senior, accent: "teal", href: "/student-life/aurora-lab/", text: "Predict, test, get it wrong, think again and understand." },
-            { title: "Summit Pathway", tag: "Grades 6–10", image: img.vocal, accent: "orange", href: "/student-life/summit-pathway/", text: "Olympiads, debate, current affairs and career guidance." },
-          ],
-        }}
-      />
-
-      <BlockView
-        block={{
-          type: "quote",
-          tone: "cream",
-          text: "Every child at ULL Auremont discovers the gold within and rises to lead a life of purpose: strong in knowledge, fit in body and mind, rooted in India and ready to serve the world.",
-          cite: "Our vision",
-        }}
-      />
-
-      <BlockView
-        block={{
-          type: "subnav",
-          eyebrow: "Admissions open",
-          heading: "Nursery to Grade 10",
-          items: [
-            { title: "Foundational", tag: "Nursery–Grade 2", image: img.toddler, href: "/academics/foundational/", text: "Learning through play, stories and wonder.", accent: "gold" },
-            { title: "Preparatory", tag: "Grades 3–5", image: img.primary, href: "/academics/preparatory/", text: "From play to purposeful learning.", accent: "orange" },
-            { title: "Middle & Secondary", tag: "Grades 6–10", image: img.senior, href: "/academics/middle/", text: "Thinking like mathematicians, scientists and historians, then board-ready.", accent: "teal" },
-          ],
-        }}
-      />
-
-      <BlockView block={{ type: "faq", tone: "cream", eyebrow: "Questions parents ask", heading: "A little more clarity", items: faqs.slice(0, 5) }} />
 
       <BlockView
         block={{
           type: "cta",
           image: img.arrival,
-          heading: "Ready to see it for yourself?",
-          text: "Visit any working day by appointment. Meet our teachers and watch learning in action.",
-          primary: { label: "Book a campus visit", href: "/admissions/visit/" },
-          secondary: { label: "Enquire now", href: "/admissions/enquire/" },
+          heading: "Ready to see a ULL school for yourself?",
+          text: `Book a visit to ${campuses[0].name}, or tell us what you are looking for.`,
+          primary: { label: "Book a campus visit", href: "/auremont/admissions/visit/" },
+          secondary: { label: "Contact us", href: "/contact/" },
         }}
       />
     </>

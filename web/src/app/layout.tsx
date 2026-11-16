@@ -1,13 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { site } from "@/content/site";
+import { group } from "@/content/brands";
 
+// Page titles carry their brand ("… | ULL Auremont"); see pageMetadata in lib/seo.ts.
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | CBSE School in Nagarbhavi, Bengaluru`, template: `%s | ${site.name}` },
-  description: `${site.name} is a CBSE school in Nagarbhavi, Bengaluru for Nursery to Grade 10. ${site.tagline}`,
-  applicationName: site.name,
-  openGraph: { siteName: site.name, locale: "en_IN", type: "website", images: [{ url: "/og.png", width: 1200, height: 630 }] },
+  title: { default: `${group.name} | ${group.fullName} schools`, template: `%s | ${group.name}` },
+  description: group.description,
+  applicationName: group.name,
+  openGraph: { siteName: group.name, locale: "en_IN", type: "website", images: [{ url: "/og.png", width: 1200, height: 630 }] },
   twitter: { card: "summary_large_image" },
   formatDetection: { telephone: true },
 };

@@ -59,9 +59,10 @@ isProject: false
 | 17 | Success metrics for each team | 2 Nov | 13 Nov | 15 | Targets agreed; dashboard from 14 Dec |
 | 18 | CRM lead source attribution (online, offline, coupon, WhatsApp) | 16 Nov | 18 Dec | 08 | Every lead has a source at launch |
 | 19 | External CRM sync (Orggen / Zoho) | 4 Jan | 22 Jan | 08, 18, vendor API docs | Leads mirrored within 1 minute |
-| 20 | `ullindia.aptitudetest.in` psychometric integration | 11 Jan | 19 Feb | 09, integration docs | Test status and reports in both dashboards |
+| 20 | Assessment platform integration (vendor test API + result webhook) | 11 Jan | 19 Feb | 08, 09, 03, vendor org ids | Test status and reports in both dashboards |
 | 21 | Audio recorder devices + AI success metrics | 18 Jan | 26 Feb | 06, 08, device purchase | Scorecards for 4 personas |
 | 22 | Sarvam AI voice agents (inbound + outbound) | 1 Feb | 26 Mar | 08, 19, telecom DLT | Fee reminders and inbound desk live |
+| 23 | Microsoft 365, subscriptions, security, HR, compliance | 2 Nov | 11 Dec | Academic eligibility, mail decision | Tenant secured, staff on MFA, register filled; unblocks staff SSO (09) |
 
 ## Gantt
 
@@ -107,8 +108,8 @@ gantt
 - Google Business Profile API access request (approval can take weeks).
 - Meta Business Manager verification and WhatsApp Business (WATI) template approval.
 - DLT registration for SMS and voice (TRAI) under the company entity; needed before 06, 22.
-- Microsoft Entra ID app registration by the tenant admin (09).
-- Brainwonders / aptitudetest.in integration docs and subdomain setup (20).
+- Microsoft 365 purchase and academic eligibility (23); Entra ID app registration follows (09).
+- Assessment platform: ULL's own vendor organisation ids, auth token, exam/set ids and the per-child uniqueness question (20).
 - Orggen / Zoho API credentials and field list (19).
 - Sarvam AI account, telephony partner and pricing (22).
 

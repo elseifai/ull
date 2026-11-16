@@ -6,13 +6,13 @@ todos:
     content: Commit the uncommitted infra, deploy and storage work on main, then promote to uat
     status: pending
   - id: dns-delegate
-    content: Point ullindia.com at the Route 53 nameservers output by UllShared, or add records at the current registrar
-    status: pending
+    content: Point ullindia.com at the Route 53 nameservers output by UllShared, or add records at the current registrar (done 28 Oct; Gmail mail records kept)
+    status: completed
   - id: attach-domains
     content: Deploy with -c attachDomains=true so the us-east-1 certificate stacks issue and CloudFront serves the real hostnames
     status: pending
   - id: email-dns
-    content: Add SES DKIM, SPF, DMARC and a custom MAIL FROM; request SES production access
+    content: Add SES DKIM, SPF, DMARC and a custom MAIL FROM; request SES production access (dev team via the AWS IAM user; nameservers already on Route 53 with Gmail MX kept, 28 Oct)
     status: pending
   - id: private-bucket
     content: Add a private documents bucket per stage (applicant documents, call recordings, reports) with signed URLs only

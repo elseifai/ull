@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { pages, getPage } from "@/content";
+import { ownRoutes, pages, getPage } from "@/content";
 import { PageHero } from "@/components/PageHero";
 import { Blocks } from "@/components/Blocks";
 import { JsonLd } from "@/components/JsonLd";
@@ -10,7 +10,7 @@ type Props = { params: Promise<{ slug: string[] }> };
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return pages.map((p) => ({ slug: p.slug.split("/") }));
+  return pages.filter((p) => !ownRoutes.includes(p.slug)).map((p) => ({ slug: p.slug.split("/") }));
 }
 
 export async function generateMetadata({ params }: Props) {

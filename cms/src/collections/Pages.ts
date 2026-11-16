@@ -41,7 +41,7 @@ export const Pages: CollectionConfig = {
     },
     { type: 'row', fields: [
       { name: 'title', type: 'text', required: true, admin: { description: 'Used as the browser/Google title.' } },
-      { name: 'slug', type: 'text', required: true, unique: true, index: true, admin: { description: 'URL path without slashes, e.g. academics/foundational' } },
+      { name: 'slug', type: 'text', required: true, unique: true, index: true, admin: { description: 'URL path without slashes, e.g. auremont/academics/foundational (group pages have no brand prefix)' } },
     ] },
     { name: 'description', type: 'textarea', required: true, maxLength: 170, admin: { description: 'Google snippet, 150–160 characters.' } },
     {

@@ -4,7 +4,7 @@ overview: The full page tree, page templates and content checklist for the two s
 todos:
   - id: move-auremont
     content: Move the current site pages under /auremont/ with 301 redirects from old paths
-    status: pending
+    status: completed
   - id: templates
     content: Build brand home, campus, programme, stage and admissions templates in the page builder
     status: pending
@@ -59,13 +59,13 @@ Accent: orange. CBSE, Nursery – Grade 10. Motto "Rooted deep. Rising high."
 /auremont/safety-and-care/              CCTV, transport, health, counselling, POCSO policy
 /auremont/parents/                      Partnering with parents, a week at Auremont, portal
 /auremont/news/  /auremont/events/
-/auremont/nagarbhavi/                   Campus page (below)
-/auremont/nagarbhavi/facilities/
-/auremont/nagarbhavi/gallery/
-/auremont/nagarbhavi/virtual-tour/
-/auremont/nagarbhavi/transport/         Routes and areas served
-/auremont/nagarbhavi/fees/              Fee range per grade band (if approved)
-/auremont/nagarbhavi/mandatory-disclosure/  CBSE public disclosure
+/auremont/bengaluru/nagarbhavi/                   Campus page (below)
+/auremont/bengaluru/nagarbhavi/facilities/
+/auremont/bengaluru/nagarbhavi/gallery/
+/auremont/bengaluru/nagarbhavi/virtual-tour/
+/auremont/bengaluru/nagarbhavi/transport/         Routes and areas served
+/auremont/bengaluru/nagarbhavi/fees/              Fee range per grade band (if approved)
+/auremont/bengaluru/nagarbhavi/mandatory-disclosure/  CBSE public disclosure
 /auremont/admissions/                   5-step process, timeline, eligibility by age
 /auremont/admissions/enquire/
 /auremont/admissions/book-a-visit/
@@ -91,7 +91,7 @@ Accent: orange. CBSE, Nursery – Grade 10. Motto "Rooted deep. Rising high."
 13. FAQ (FAQPage schema).
 14. Visit CTA + map + WhatsApp.
 
-### Campus page `/auremont/nagarbhavi/`
+### Campus page `/auremont/bengaluru/nagarbhavi/`
 
 Address and map, phone/WhatsApp, visiting hours, grades offered, facilities summary, transport areas, fee range, admissions timeline, counsellor contact, Google rating (plan 12), "Book a visit" slot picker. JSON-LD `School` with address, geo, opening hours, `parentOrganization: ULL India`.
 
@@ -142,7 +142,7 @@ When a campus is confirmed, add `/global/<campus>/` using the same campus templa
 | Template | Used by |
 |---|---|
 | Brand home | `/auremont/`, `/global/` |
-| Campus | `/auremont/nagarbhavi/`, future campuses |
+| Campus | `/auremont/bengaluru/nagarbhavi/`, future campuses |
 | Stage | 4 Auremont stages, future Global programmes |
 | Programme | 5 Beyond the classroom pages |
 | Admissions step | admissions sub-pages |

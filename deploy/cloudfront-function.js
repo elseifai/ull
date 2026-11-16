@@ -1,27 +1,38 @@
-// CloudFront Function (viewer request) for the S3 origin: serve /path/ as /path/index.html.
-// A link without a trailing slash is redirected to the slashed URL, and the query string
-// (UTM and ad click ids) is kept. Without this, the 301 drops the campaign.
+// CloudFront Function (viewer request) for the S3 origin: serve /path/ as /path/index.html,
+// and 301 the pre-umbrella Auremont paths to their place under /auremont/ (plan 05).
+// Keep `moved` in step with cms/src/migrations/20261028_120000_umbrella_paths.ts.
+var moved = [
+  ["/about/", "/auremont/about/"],
+  ["/academics/", "/auremont/academics/"],
+  ["/student-life/", "/auremont/student-life/"],
+  ["/admissions/", "/auremont/admissions/"],
+  ["/parents/", "/auremont/parents/"],
+  ["/campus/", "/auremont/bengaluru/nagarbhavi/facilities/"],
+  ["/auremont/nagarbhavi/", "/auremont/bengaluru/nagarbhavi/"],
+];
+
 function query(qs) {
   var parts = [];
   for (var k in qs) {
     var v = qs[k];
-    if (v && v.multiValue && v.multiValue.length) {
-      for (var i = 0; i < v.multiValue.length; i++) parts.push(encode(k, v.multiValue[i].value));
-    } else parts.push(encode(k, v && v.value));
+    parts.push(v.value ? k + "=" + v.value : k);
   }
   return parts.length ? "?" + parts.join("&") : "";
 }
 
-function encode(key, value) {
-  return value ? key + "=" + value : key;
+function redirect(location) {
+  return { statusCode: 301, statusDescription: "Moved Permanently", headers: { location: { value: location } } };
 }
 
 function handler(event) {
   var req = event.request;
   var uri = req.uri;
-  if (uri.endsWith("/")) req.uri += "index.html";
-  else if (!uri.split("/").pop().includes(".")) {
-    return { statusCode: 301, statusDescription: "Moved Permanently", headers: { location: { value: uri + "/" + query(req.querystring) } } };
+  var file = uri.split("/").pop().includes(".");
+  var dir = uri.endsWith("/") || file ? uri : uri + "/";
+  for (var i = 0; i < moved.length; i++) {
+    if (dir.indexOf(moved[i][0]) === 0) return redirect(moved[i][1] + dir.slice(moved[i][0].length) + query(req.querystring));
   }
+  if (uri.endsWith("/")) req.uri += "index.html";
+  else if (!file) return redirect(uri + "/" + query(req.querystring));
   return req;
 }

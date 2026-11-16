@@ -4,8 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
-import { Logo } from "./Logo";
-import { nav, utilityLinks, site } from "@/content/site";
+import { BrandLogo } from "./Logo";
+import { brandOf, brands, group, navFor } from "@/content/brands";
+
+// The group switcher on every page, so families can move between ULL India and its schools.
+const switcher = [{ label: group.name, href: "/", slug: null }, ...Object.values(brands).map((b) => ({ label: b.name, href: b.href, slug: b.slug }))];
 
 export function Header({ logoSrc }: { logoSrc?: string }) {
   const [open, setOpen] = useState(false);
@@ -24,7 +27,9 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
     };
   }, [open]);
 
-  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
+  const brand = brandOf(pathname);
+  const { nav, utility, primary } = navFor(brand);
+  const isActive = (href: string) => pathname === href || (!href.includes("#") && href !== "/" && pathname.startsWith(href));
 
   return (
     <>
@@ -32,11 +37,23 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
       {/* Utility bar (desktop) */}
       <div className="hidden bg-navy text-white lg:block">
         <div className="container-x flex h-10 items-center justify-between text-[13px]">
-          <p className="text-white/80">
-            {site.board} · {site.grades} · {site.address.locality}, {site.address.city}
-          </p>
+          <nav aria-label="ULL schools">
+            <ul className="flex items-center gap-1">
+              {switcher.map((b) => (
+                <li key={b.href}>
+                  <Link
+                    href={b.href}
+                    aria-current={(brand?.slug ?? null) === b.slug ? "true" : undefined}
+                    className={`px-2.5 py-1 text-white/70 hover:text-white ${(brand?.slug ?? null) === b.slug ? "bg-white/10 font-semibold text-white" : ""}`}
+                  >
+                    {b.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <nav aria-label="Quick links" className="flex items-center gap-5">
-            {utilityLinks.map((l) => (
+            {utility.map((l) => (
               <Link key={l.href} href={l.href} className="font-semibold tracking-wide text-white/90 hover:text-gold">
                 {l.label}
               </Link>
@@ -46,8 +63,8 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
       </div>
 
       <div className="container-x flex h-16 items-center justify-between gap-4 lg:h-[5.5rem]">
-        <Link href="/" aria-label={`${site.name} home`} className="shrink-0">
-          <Logo src={logoSrc} />
+        <Link href={brand?.href ?? "/"} aria-label={`${brand?.name ?? group.name} home`} className="shrink-0">
+          <BrandLogo brand={brand} src={logoSrc} />
         </Link>
 
         {/* Desktop navigation */}
@@ -83,8 +100,8 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/admissions/visit/" className="btn-accent hidden min-h-11 px-5 sm:inline-flex">
-            Book a visit
+          <Link href={primary.href} className="btn-accent hidden min-h-11 px-5 sm:inline-flex">
+            {primary.label}
           </Link>
           <button
             type="button"
@@ -105,6 +122,18 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
       {open && (
         <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-white lg:hidden">
           <nav aria-label="Main" className="container-x pb-28 pt-2">
+            <ul className="flex flex-wrap gap-2 border-b border-line py-4" aria-label="ULL schools">
+              {switcher.map((b) => (
+                <li key={b.href}>
+                  <Link
+                    href={b.href}
+                    className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold ${(brand?.slug ?? null) === b.slug ? "border-navy bg-navy text-white" : "border-line text-navy"}`}
+                  >
+                    {b.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <ul className="divide-y divide-line">
               {nav.map((item) => (
                 <li key={item.href}>
@@ -140,7 +169,7 @@ export function Header({ logoSrc }: { logoSrc?: string }) {
               ))}
             </ul>
             <div className="mt-6 grid gap-3">
-              <Link href="/admissions/visit/" className="btn-primary">Book a campus visit</Link>
+              <Link href={primary.href} className="btn-primary">{primary.label}</Link>
               <Link href="/portal/" className="btn-outline">Parent login</Link>
             </div>
           </nav>
